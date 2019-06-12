@@ -40,6 +40,12 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+# Python files #
+###################
+venv/
+.cache/
+__pycache__/
+
 # https://gist.github.com/octocat/9257657
 # Compiled source #
 ###################
