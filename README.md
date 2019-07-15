@@ -12,8 +12,8 @@ The current comparative schedules for the HUMAN lunch and the STEAM lunch are he
 
 ## Links
 
-- [https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/] &mdash; schedule spreadsheet
-- [https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/] &mdash; calendar spreadsheet
-- [https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/] &mdash; a draft specification and use cases
-- [https://github.com/bast/somepackage] &mdash; this [Python](https://docs.python.org/3/) poject is structured after Radovan Bast's `somepackage` project
-- [https://github.com/psb-2018-2019-apcsp/bhs-calendar] &mdash; the [Github](https://github.com/] repo for this project.
+- https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/ &mdash; schedule spreadsheet
+- [https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/](https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) &mdash; calendar spreadsheet
+- [https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/](https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/) &mdash; a draft specification and use cases
+- https://github.com/bast/somepackage &mdash; this [Python](https://docs.python.org/3/) poject is structured after Radovan Bast's `somepackage` project
+- [https://github.com/psb-2018-2019-apcsp/bhs-calendar] &mdash; the [Github](https://github.com/) repo for this project.
