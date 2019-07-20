@@ -7,10 +7,10 @@
 
 import csv, datetime, os, re, sys
 
-__author__ = "David C. Petty & 2019-2020 BHS APCSP"
+__author__ = "David C. Petty & 2018-2019 BHS APCSP"
 __copyright__ = "Copyright 2019, David C. Petty"
 __license__ = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __maintainer__ = "David C. Petty"
 __email__ = "david_petty@psbma.org"
 __status__ = "Hack"
@@ -18,9 +18,10 @@ __status__ = "Hack"
 # http://code.activestate.com/recipes/577070-bound-inner-classes/
 # for a bound inner class decorator...
 
+
 class Heading:
-    """Encodes parsed schedule column heading into:
-    weekday, week, cohort, and lunch."""
+    """Encodes parsed schedule column heading into: weekday, week, cohort,
+    e.g. parse 'Monday A BHS'"""
 
     __regex = r'(\S+)\s+(\S+)\s+(\S+)'
 
@@ -48,15 +49,16 @@ class Heading:
         """Return true if self._cohort contains cohort."""
         return cohort.upper() in self._cohort.upper()
 
-    def isBHS(self): return self._is_cohort('BHS')
-    def isRED(self): return self._is_cohort('RED')
-    def isBLU(self): return self._is_cohort('BLU')
+    def is_bhs(self): return self._is_cohort('BHS')
+    def is_red(self): return self._is_cohort('RED')
+    def is_blu(self): return self._is_cohort('BLU')
 
     def __str__(self):
         """Return string representation of Heading."""
         return f"{self.weekday()}|{self.week()}|{self.cohort()}"
 
     __repr__ = __str__
+
 
 class Block:
     """Encodes data on schedule blocks."""
@@ -99,7 +101,7 @@ class Block:
         """Return duration of this block."""
         return self._end - self._start + 1
 
-    def _duration(self):
+    def duration_str(self):
         """Return string for duration."""
         start = datetime.time(self._start // 60, self._start % 60) \
             .strftime('%I:%M')          # %p
@@ -114,7 +116,7 @@ class Block:
     def __str__(self):
         """Return string representation of Block."""
         return f"{self._name}-" \
-            f"{self._duration()}-" \
+            f"{self.duration_str()}-" \
             f"{self.duration()}-" \
             f"{self._school}-" \
             f"({Heading(self._day)})-" \
@@ -123,12 +125,14 @@ class Block:
 
     __repr__ = __str__
 
+
 class Schedule:
     """2019-2020 BHS Schedule."""
 
     def __init__(self, csvfile, datadir='../data', wwwdir='../www'):
-        """Initialize Schedule class for path .CSV file, including reading
-        path .CSV file from datadir and writing path .HTML file to wwwdir."""
+        """Initialize Schedule class for csvfile .CSV file, including
+        reading csvfile .CSV file from datadir and writing csvfile .HTML
+        file to wwwdir."""
         # Symbolic constants
         self._webpage_format = """
 <!DOCTYPE html>
@@ -180,7 +184,7 @@ class Schedule:
     <!-- FOOTER -->
     <footer>
       <section>
-        <h2>{filename} &mdash; {datetime}</h2>
+        <h2>{filename} &mdash; {date_time}</h2>
         <article>
           <p>This file is available on <a href="https://github.com/psb-2018-2019-apcsp/bhs-calendar/">Github</a>&hellip;</p>
           <ul>
@@ -225,44 +229,53 @@ class Schedule:
 
     def _init(self, csvfile, datadir, wwwdir):
         """Initialize webpage parameters."""
+
         filename, extension = os.path.splitext(csvfile)
         self._filename, self._datadir, self._wwwdir = filename, datadir, wwwdir
         assert extension == '.csv', f"Bad extension: '{extension}' != '.csv'"
 
-        self._schedule = \
-            self.csv(os.path.join(self._datadir, self._filename + '.csv'))
-        version = self._schedule[0][0]                  # which lunch version
-        self._formatted_datetime = datetime.datetime.now().strftime('%c')
-        # strftime('%a-%Y/%m/%d-%I:%M:%S%p%z')
-        csv = ''
-        for row in self._schedule:
-            csv += f"{row}\n"
-        self._comment = f"Created by {type(self).__name__} " \
-            f"on {self._formatted_datetime} " \
-            f"from CSV{':'} \n{csv}"
-        self._dict = dict()
+        self._csvpath = os.path.join(self._datadir, self._filename + '.csv')
+        self._wwwpath = os.path.join(self._wwwdir, self._filename + '.html')
 
-        pB2O, pO2B = 'PB2O'.upper(), 'PO2B'.upper()     # to check for school
-        for col in range(1, max([ len(row) for row in self._schedule ])):
+        self._schedule = self._csv(self._csvpath)       # parse .CSV file
+
+        # Format comment.
+        self._formatted_date_time = datetime.datetime.now().strftime('%c')
+        # strftime('%a-%Y/%m/%d-%I:%M:%S%p%z')
+        csv_comment = ''
+        for row in self._schedule:
+            csv_comment += f"{row}\n"
+        self._comment = f"Created by {type(self).__name__} " \
+            f"on {self._formatted_date_time} " \
+            f"from CSV{':'} \n{csv_comment}"
+
+        # Create blocks _dict w/ for each column of _schedule keyed w/ heading
+        # w/ block entries for name, start, end, school, col, day, lunch
+        self._dict = dict()
+        lunch = self._schedule[0][0]                    # which lunch version
+        pb2o, po2b = 'PB2O'.upper(), 'PO2B'.upper()     # to check for school
+        for col in range(1, max([len(row) for row in self._schedule])):
             blocks = list()
             day, name = self._schedule[0][col], self._schedule[1][col]
 
-            firstB2O, lastB2O, firstO2B, lastO2B = None, None, None, None
-            for row in self._schedule[1: ]:
+            # First find pb2o and po2b inter-school passing.
+            first_b2o, last_b2o, first_o2b, last_o2b = None, None, None, None
+            for row in self._schedule[1:]:              # not including header
                 # Look for inter-school passing.
-                if pB2O in row[col]:
-                    if not firstB2O:
-                        firstB2O = lastB2O = self._minute(row[0])
+                if pb2o in row[col]:
+                    if not first_b2o:
+                        first_b2o = last_b2o = self._minute(row[0])
                     else:
-                        lastB2O = self._minute(row[0])
-                if pO2B in row[col]:
-                    if not firstO2B:
-                        firstO2B = lastO2B = self._minute(row[0])
+                        last_b2o = self._minute(row[0])
+                if po2b in row[col]:
+                    if not first_o2b:
+                        first_o2b = last_o2b = self._minute(row[0])
                     else:
-                        lastO2B = self._minute(row[0])
+                        last_o2b = self._minute(row[0])
 
+            # Next find block start and end.
             start = end = self._minute(self._schedule[1][0])
-            for row in self._schedule[1: ]:
+            for row in self._schedule[1:]:              # not including header
                 # Look for end of block.
                 if row[col] == name:
                     end = self._minute(row[0])
@@ -273,33 +286,39 @@ class Schedule:
                         # OLS, if BLUE column and below PO2B (or no PO2B); or
                         # PB2O or PO2B, if passing schools;
                         # otherwise, BHS.
-                        school = name if pB2O in name or pO2B in name else \
-                            'OLS' if \
-                                ('RED' in day.upper() and \
-                                    (lastB2O == None or start > lastB2O)) or \
-                                ('BLUE' in day.upper() and \
-                                    (firstO2B == None or end < firstO2B)) \
+                        school = name if pb2o in name or po2b in name else \
+                            'OLS' if ('RED' in day.upper() and
+                                      (last_b2o is None or start > last_b2o)) \
+                            or ('BLUE' in day.upper() and
+                                (first_o2b is None or end < first_o2b)) \
                             else 'BHS'
-                        block = Block(name, start, end, school, col, day, version)
+                        block = Block(name, start, end, school, col, day, lunch)
                         blocks.append(block)
                     name = row[col]
                     start = end = self._minute(row[0])
             self._dict[day] = blocks
-        self.webpage(os.path.join(self._wwwdir, self._filename + '.html'))
+
+        # Format webpage based on _schedule and _dict and write it out.
+        self._page = self._webpage()
+        self.write(self._wwwpath)
 
     # ///////////////////////////// UTILITIES //////////////////////////////
 
-    def _minute(self, time):
+    # https://realpython.com/instance-class-and-static-methods-demystified/
+
+    @staticmethod
+    def _minute(time):
         """Return minute number for time string, e.g. '7:30 AM' yields 450."""
         parsed = datetime.datetime.strptime(time, '%I:%M %p')
         return parsed.hour * 60 + parsed.minute
 
-    def _wrap(self, text, indent=0, wrap=80, delimiter=' '):
+    @staticmethod
+    def _wrap(text, indent=0, wrap=80, delimiter=' '):
         """Return text, broken into lines of no more than wrap characters,
         indented by indent spaces. Indent only, if wrap <= 0."""
-        length, start, last, space, result = wrap - indent, 0, 0, ' ', ''
+        length, start, last, space, result = wrap - indent, 0, 0, delimiter, ''
         for i, c in enumerate(text.strip()):
-            if length > 0 and i - start >= length:
+            if 0 < length <= i - start:
                 result += '\n' + space * indent + text[start: last]
                 start = last
             if c == delimiter:
@@ -310,9 +329,54 @@ class Schedule:
         result += '\n' + space * indent + text.strip()[start: ]
         return result[1: ]
 
-    def webpage(self, outpath=None):
-        """Create self.page and save in outpath (or print if None)."""
-        scale = lambda x: round(x * 3, 0)
+    @staticmethod
+    def _scale(x, factor=3):
+        """Return x scaled by factor and rounded to nearest int."""
+        return round(x * factor)
+
+    @staticmethod
+    def _csv(csvpath):
+        """Return csv file as 2d list.
+        """
+        with open(csvpath) as csvfile:
+            schedule, schedulereader = list(), csv.reader(csvfile)
+            for row in schedulereader:
+                schedule.append(row)
+        return schedule
+
+    @staticmethod
+    def _totals(block_dict, cohorts, echo=False):
+        """Return dict of totals for each block letter, including lunch ('L'),
+        as entries in a dict keyed by cohorts. Print totals, if echo."""
+        totals = dict()
+        for name in cohorts:                            # cohort name
+            totals[name] = dict()
+            for key, blocks in block_dict.items():
+                for block in blocks:
+                    # Match block letter(s) followed by number(s).
+                    match = re.match(r'(\D+)\d+$', block.name())
+                    if Heading(block.day()).cohort() == name and match:
+                        c = match.group(1)
+                        totals[name][c] = \
+                            totals[name].get(c, 0) + block.duration()
+                    # Handle lunches separately.
+                    if block.name().upper()[0] == 'L':
+                        totals[name]['L'] = \
+                            totals[name].get('L', 0) + block.duration()
+
+        # Conditionally echo totals.
+        if echo:
+            for c, t in totals.items():
+                print(f"{c}:", end=' ')
+                line = ''
+                for k in sorted(t.keys()):
+                    line += f"{k}={t[k]} "
+                print(line)
+
+        return totals
+
+    def _webpage(self):
+        """Return webpage based on _schedule and _dict."""
         days = ''
         # Process every column, keeping three cohorts together for every day.
         for i, key in enumerate(self._schedule[0][1: ]):
@@ -323,17 +387,18 @@ class Schedule:
             style = f"blocks"
             cohort = head.cohort()
             # Add skip to empty paragraph for empty block at start of day.
-            skip = scale(self._dict[key][0].start()
+            skip = self._scale(self._dict[key][0].start()
                 - self._minute(self._schedule[1][0]))
             skip += 2 if skip else 0                    # adjust for border(s)
-            blocks = f"""    <p class="start" style="height: {skip}px;"></p>\n"""
+            blocks = \
+                f"""    <p class="start" style="height: {skip}px;"></p>\n"""
             # Add a paragraph for every block to cohort.
             for block in self._dict[key]:
                 name = block.name().upper()
-                is_passing = name[0] in [ 'P', '?', ]
-                is_passing_split = name in [ 'PS', ]
-                is_passing_question = name in [ '?' ]
-                is_school_passing = name in [ 'PB2O', 'PO2B', ]
+                is_passing = name[0] in ['P', '?', ]
+                is_passing_split = name in ['PS', ]
+                is_passing_question = name in ['?', ]
+                is_school_passing = name in ['PB2O', 'PO2B', ]
                 # Display passing blocks w/ no content, just mouse-over title.
                 if is_passing and not is_school_passing:
                     cls = f"passing"
@@ -351,14 +416,14 @@ class Schedule:
                         else f"block cohort-{cohort.lower()} " \
                             f"school-{school.lower()}"
                     text = f"{block.name()}<br />" \
-                        f"{block._duration()}<br />" \
+                        f"{block.duration_str()}<br />" \
                         f"{block.duration()}"
-                    if name[0] in [ 'L', ]:             # add lunch class
+                    if name[0] in ['L', ]:              # add lunch class
                         cls += f" lunch"
-                pad = scale(block.duration())
+                pad = self._scale(block.duration())
                 title = f"{name} @ " \
                     f"{school}: " \
-                    f"{block._duration()} = " \
+                    f"{block.duration_str()} = " \
                     f"{block.duration()}"
                 blocks += self._wrap(self._block_format.strip().format(
                     cls=cls, pad=pad, title=title, text=text),
@@ -369,40 +434,18 @@ class Schedule:
                 days += self._wrap(self._cohorts_format.strip().format(
                     column=column, cohorts=cohorts.rstrip()), 2, 0) + '\n'
 
-        # Calculate totals for each block for each cohort.
+        # Names are block cohort names in _dict.
         names = set()
         for key in self._dict.keys():
             names.add(Heading(key).cohort())
-        names = [ 'BHS', 'Red', 'Blue', ]               # need this order
-        totals = dict()
-        for name in names:
-            totals[name] = dict()
-            for key, blocks in self._dict.items():
-                for block in blocks:
-                    # Match block letter(s) followed by number(s).
-                    match = re.match(r'(\D+)\d+$', block.name())
-                    if Heading(block.day()).cohort() == name and match:
-                        c = match.group(1)
-                        totals[name][c] = \
-                            totals[name].get(c, 0) + block.duration()
-                    # Handle lunches separately.
-                    if block.name().upper()[0] == 'L':
-                        totals[name]['L'] = \
-                            totals[name].get('L', 0) + block.duration() 
-        """
-        # ECHO TOTALS
-        for c, t in totals.items():
-            print(c, ':', end = ' ')
-            s = ''
-            for k in sorted(t.keys()):
-                s += f"{k}={t[k]} "
-            print(s)
-        """
-        # Add cohort columns for totals.
+        names = ['BHS', 'Red', 'Blue', ]                # need this order
+
+        # Calculate block totals by cohort and add cohort columns for totals.
+        totals = self._totals(self._dict, names, True)
         column = 'Totals'
         cohorts = ''
         style = f"totals"
-        keys = set([ k for n in names for k in totals[n].keys() ])
+        keys = set([k for n in names for k in totals[n].keys()])
         for cohort in names:
             blocks = ''
             for key in sorted(keys):
@@ -421,44 +464,38 @@ class Schedule:
         main = self._wrap(self._days_format.strip().format(
             days=days.rstrip()), 6, 0)
 
-        # Format webpage.
+        # Return formatted webpage.
         heading = f"{self._schedule[0][0]} Lunch"
         comment = self._wrap(self._comment, 4, 0)
         filename = self._filename
-        datetime = self._formatted_datetime
-        self.page = self._webpage_format.strip().format(
+        date_time = self._formatted_date_time
+        return self._webpage_format.strip().format(
             comment=comment, heading=heading, main=main,
-            filename=filename, datetime=datetime)
+            filename=filename, date_time=date_time)
 
+    def write(self, outpath=None):
+        """Write self.page to outpath, or print if outpath is None."""
         # Write or print self.code.
         if outpath:
             with open(outpath, 'w') as outfile:
-                outfile.write(self.page)
+                outfile.write(self._page)
             print(outpath)
         else:
             print(self.page)
 
-    def csv(self, csvpath):
-        """Return csv file as 2d list."""
-        with open(csvpath) as csvfile:
-            schedule, schedulereader = list(), csv.reader(csvfile)
-            for row in schedulereader:
-                schedule.append(row)
-        return schedule
 
 if __name__ == '__main__':
-    if 'idlelib' in sys.modules:
+    if 'idlelib' in sys.modules or int(os.getenv('PYCHARM', 0)):
         human_schedule = Schedule('schedule-1b-bhs-2019-2020-human.csv')
         steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam.csv')
 
-##        print(Block('FOO', 100, 199, 'BHS', 47, 'BAR BLAP FRAB', 'STEAM'))
-##
-##        lipsum = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra ex vitae nisi volutpat, vitae elementum felis eleifend. Nullam laoreet ac nisl a dignissim. In sem libero, gravida commodo diam eu, egestas vehicula purus. Pellentesque laoreet maximus nunc, eget sollicitudin urna feugiat id. Sed aliquam purus ut leo pellentesque, euismod eleifend quam eleifend. Pellentesque eget urna sed nisl finibus facilisis. Aliquam consequat diam magna, in mollis leo posuere imperdiet. Ut fermentum bibendum pellentesque. Aenean eleifend massa nisi, et dictum justo sagittis id. Etiam sollicitudin et turpis at cursus. Proin nec est lectus. Nullam dui purus, imperdiet a mattis in, convallis dictum massa. Suspendisse nec fringilla nibh.
-##
-##Quisque a purus et purus mattis venenatis non at tellus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam tincidunt tincidunt bibendum. Fusce interdum lacus eu ex tincidunt auctor. Vestibulum efficitur libero sem, eu viverra est finibus vitae. Vivamus viverra imperdiet euismod. Fusce neque eros, vehicula ut leo aliquam, efficitur vestibulum velit.
-##
-##Duis accumsan hendrerit leo non placerat. Donec pretium eros urna, in semper neque venenatis a. In hac habitasse platea dictumst. Mauris pharetra tellus purus, et ultrices neque feugiat quis. Donec sagittis rutrum ipsum, nec condimentum augue malesuada vitae. Fusce ornare cursus quam, et sollicitudin purus varius ac. Proin velit nunc, dictum sit amet purus nec, facilisis eleifend turpis. Cras at dui gravida dolor elementum congue in luctus magna. Pellentesque in eros et nibh lacinia luctus. Etiam finibus lacus ut imperdiet facilisis. Nulla facilisi. Etiam ac augue at dolor placerat aliquet. Morbi sit amet pellentesque libero. Etiam ante magna, mollis nec viverra vitae, consectetur ac dui.
-##
-##""".replace(' ', ' ')
-##        print('1234567890' * 9)
-##        print('"{}"'.format(schedule._wrap(lipsum, 4)))
+        lipsum = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra ex vitae nisi volutpat, vitae elementum felis eleifend. Nullam laoreet ac nisl a dignissim. In sem libero, gravida commodo diam eu, egestas vehicula purus. Pellentesque laoreet maximus nunc, eget sollicitudin urna feugiat id. Sed aliquam purus ut leo pellentesque, euismod eleifend quam eleifend. Pellentesque eget urna sed nisl finibus facilisis. Aliquam consequat diam magna, in mollis leo posuere imperdiet. Ut fermentum bibendum pellentesque. Aenean eleifend massa nisi, et dictum justo sagittis id. Etiam sollicitudin et turpis at cursus. Proin nec est lectus. Nullam dui purus, imperdiet a mattis in, convallis dictum massa. Suspendisse nec fringilla nibh.
+
+Quisque a purus et purus mattis venenatis non at tellus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam tincidunt tincidunt bibendum. Fusce interdum lacus eu ex tincidunt auctor. Vestibulum efficitur libero sem, eu viverra est finibus vitae. Vivamus viverra imperdiet euismod. Fusce neque eros, vehicula ut leo aliquam, efficitur vestibulum velit.
+
+Duis accumsan hendrerit leo non placerat. Donec pretium eros urna, in semper neque venenatis a. In hac habitasse platea dictumst. Mauris pharetra tellus purus, et ultrices neque feugiat quis. Donec sagittis rutrum ipsum, nec condimentum augue malesuada vitae. Fusce ornare cursus quam, et sollicitudin purus varius ac. Proin velit nunc, dictum sit amet purus nec, facilisis eleifend turpis. Cras at dui gravida dolor elementum congue in luctus magna. Pellentesque in eros et nibh lacinia luctus. Etiam finibus lacus ut imperdiet facilisis. Nulla facilisi. Etiam ac augue at dolor placerat aliquet. Morbi sit amet pellentesque libero. Etiam ante magna, mollis nec viverra vitae, consectetur ac dui.
+
+""".replace(' ', ' ')
+#         print('1234567890' * 8)
+#         print('"{}"'.format(human_schedule._wrap(lipsum, 6)))
+#         print(Block('FOO', 100, 199, 'BHS', 47, 'BAR BLAP FRAB', 'STEAM'))
