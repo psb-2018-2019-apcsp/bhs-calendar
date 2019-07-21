@@ -132,7 +132,17 @@ class Schedule:
     def __init__(self, csvfile, datadir='../data', wwwdir='../www'):
         """Initialize Schedule class for csvfile .CSV file, including
         reading csvfile .CSV file from datadir and writing csvfile .HTML
-        file to wwwdir."""
+        file to wwwdir. The .CSV file follows the following format:
+
+            STEAM,Monday A BHS,Monday A Red,Monday A Blue,Tuesday A BHS, ...
+            7:30 AM,Z1,Z1,,Z2, ...
+            ...
+
+        Where the 0th row is a header with schedule name, followed by triples
+        of cohorts for as many cycle days as there are and the subsequent
+        rows are times (in minutes) followed by triples of block names (or
+        blank) for that cohort for that minute for that cycle day."""
+
         # Symbolic constants
         self._webpage_format = """
 <!DOCTYPE html>
@@ -376,7 +386,8 @@ class Schedule:
         return totals
 
     def _webpage(self):
-        """Return webpage based on _schedule and _dict."""
+        """Return webpage based on _schedule and _dict.
+        Note: there are three cohorts, hence the 'i % 3' code."""
         days = ''
         # Process every column, keeping three cohorts together for every day.
         for i, key in enumerate(self._schedule[0][1: ]):
