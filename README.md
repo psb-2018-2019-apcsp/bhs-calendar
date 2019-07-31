@@ -4,7 +4,11 @@ This is a project of the 2018-2019 [Brookline High School](http://bhs.brookline.
 
 ## New schedule
 
-For the academic years 2019-2020 and 2020-2021, [BHS](http://bhs.brookline.k12.ma.us/) will be [under construction](http://bhs.brookline.k12.ma.us/expansion-project.html). Consequently, grade-9 students will be organized in two [cohorts](http://bhs.brookline.k12.ma.us/9th-grade-transition.html) with part of each day being at [Old Lincoln School](https://google.com/maps/place/194+Boylston+St.+02445). *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
+For the academic years 2019-2020 and 2020-2021, [BHS](http://bhs.brookline.k12.ma.us/) will be [under construction](http://bhs.brookline.k12.ma.us/expansion-project.html). Consequently, grade-9 students will be organized in two [cohorts](http://bhs.brookline.k12.ma.us/9th-grade-transition.html) with part of each day being at [Old Lincoln School](https://google.com/maps/place/194+Boylston+St.+02445).
+
+## What we did
+
+- *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
 
 The current comparative schedules for the HUMAN lunch (currently called *Lunch A*) and the STEAM lunch  (currently called *Lunch B*) are here:
 
@@ -13,8 +17,11 @@ Lunch | Adjusted Lunch Schedules | Split Lunch Schedules
 HUMAN | [./www/schedule-1b-bhs-2019-2020-human.html](./www/schedule-1b-bhs-2019-2020-human.html) | [./www/schedule-1b-bhs-2019-2020-human-split.html](./www/schedule-1b-bhs-2019-2020-human-split.html)
 STEAM | [./www/schedule-1b-bhs-2019-2020-steam.html](./www/schedule-1b-bhs-2019-2020-steam.html) | [./www/schedule-1b-bhs-2019-2020-steam-split.html](./www/schedule-1b-bhs-2019-2020-steam-split.html)
 
+*More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
+
 ## Links
 
+- [./data/19_20_SCHED_v1B.pdf](./data/19_20_SCHED_v1B.pdf) &mdash; Current BHS schedule (1B)
 - [https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) &mdash; schedule spreadsheet
 - [https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/](https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) &mdash; calendar spreadsheet
 - [https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/](https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/) &mdash; a draft specification and use cases
