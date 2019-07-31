@@ -6,9 +6,12 @@ This is a project of the 2018-2019 [Brookline High School](http://bhs.brookline.
 
 For the academic years 2019-2020 and 2020-2021, [BHS](http://bhs.brookline.k12.ma.us/) will be [under construction](http://bhs.brookline.k12.ma.us/expansion-project.html). Consequently, grade-9 students will be organized in two [cohorts](http://bhs.brookline.k12.ma.us/9th-grade-transition.html) with part of each day being at [Old Lincoln School](https://google.com/maps/place/194+Boylston+St.+02445). *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
 
-The current comparative schedules for the HUMAN lunch and the STEAM lunch are here:
-- [./www/schedule-1b-bhs-2019-2020-human.html](./www/schedule-1b-bhs-2019-2020-human.html) Currently called *Lunch A*
-- [./www/schedule-1b-bhs-2019-2020-steam.html](./www/schedule-1b-bhs-2019-2020-steam.html) Currently called *Lunch B*
+The current comparative schedules for the HUMAN lunch (currently called *Lunch A*) and the STEAM lunch  (currently called *Lunch B*) are here:
+
+Lunch | Adjusted Lunch Schedules | Split Lunch Schedules
+----- | ------------------------ | ---------------------
+HUMAN | [./www/schedule-1b-bhs-2019-2020-human.html](./www/schedule-1b-bhs-2019-2020-human.html) | [./www/schedule-1b-bhs-2019-2020-human-split.html](./www/schedule-1b-bhs-2019-2020-human-split.html)
+STEAM | [./www/schedule-1b-bhs-2019-2020-steam.html](./www/schedule-1b-bhs-2019-2020-steam.html) | [./www/schedule-1b-bhs-2019-2020-steam-split.html](./www/schedule-1b-bhs-2019-2020-steam-split.html)
 
 ## Links
 
