@@ -12,10 +12,14 @@ For the academic years 2019-2020 and 2020-2021, [BHS](http://bhs.brookline.k12.m
 
 The current comparative schedules for the HUMAN lunch (currently called *Lunch A*) and the STEAM lunch  (currently called *Lunch B*) are here:
 
-Lunch | Adjusted Lunch Schedules | Split Lunch Schedules
+Version | HUMAN | STEAM
 ----- | ------------------------ | ---------------------
-HUMAN | [./www/schedule-1b-bhs-2019-2020-human.html](./www/schedule-1b-bhs-2019-2020-human.html) | [./www/schedule-1b-bhs-2019-2020-human-split.html](./www/schedule-1b-bhs-2019-2020-human-split.html)
-STEAM | [./www/schedule-1b-bhs-2019-2020-steam.html](./www/schedule-1b-bhs-2019-2020-steam.html) | [./www/schedule-1b-bhs-2019-2020-steam-split.html](./www/schedule-1b-bhs-2019-2020-steam-split.html)
+**30-minute** | [./www/schedule-1b-bhs-2019-2020-human-split.html](./www/schedule-1b-bhs-2019-2020-human-split.html) | [./www/schedule-1b-bhs-2019-2020-steam-split.html](./www/schedule-1b-bhs-2019-2020-steam-split.html)
+**shortened** | [./www/schedule-1b-bhs-2019-2020-human.html](./www/schedule-1b-bhs-2019-2020-human.html) | [./www/schedule-1b-bhs-2019-2020-steam.html](./www/schedule-1b-bhs-2019-2020-steam.html)
+
+The **30-minute** schedules keep (almost) all lunches at 30 minutes, thereby stealing passing times from the block, except in cases where the schedule explicitly states zero-length passing time. This results in (mostly) even lunch durations, but uneven block durations (especially C, D, E, &amp; G, depending on which lunch). (Note: there appears to be a bug in the Blue Cohort schedule for F7, where STEAM lunch is 5 minutes early.)
+
+The **shortened** schedules are a first draft at evening the block durations (our goal was within 5 minutes of 435) by shortening the lunch block in cases of split lunch (mostly the HUMAN lunch schedule) by stealing the first passing time from the lunch block. This results in (mostly) even block durations (though there are still some anomolies) but *wildly* uneven lunch durations, *e.g.* a 41-minute lunch discrepancy for grade 9 from HUMAN to STEAM.
 
 *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
 
