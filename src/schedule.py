@@ -363,14 +363,15 @@ class Schedule:
             totals[name] = dict()
             for key, blocks in block_dict.items():
                 for block in blocks:
+                    cohort = Heading(block.day()).cohort()
                     # Match block letter(s) followed by number(s).
                     match = re.match(r'(\D+)\d+$', block.name())
-                    if Heading(block.day()).cohort() == name and match:
+                    if cohort == name and match:
                         c = match.group(1)
                         totals[name][c] = \
                             totals[name].get(c, 0) + block.duration()
                     # Handle lunches separately.
-                    if block.name().upper()[0] == 'L':
+                    if cohort == name and block.name().upper()[0] == 'L':
                         totals[name]['L'] = \
                             totals[name].get('L', 0) + block.duration()
 
@@ -496,7 +497,14 @@ class Schedule:
 
 
 if __name__ == '__main__':
-    if 'idlelib' in sys.modules or int(os.getenv('PYCHARM', 0)):
+    is_idle, is_pycharm, is_jupyter = (
+        'idlelib' in sys.modules,
+        int(os.getenv('PYCHARM', 0)),
+        '__file__' not in globals()
+        )
+    if is_idle or is_pycharm or is_jupyter:
+        human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-split.csv')
+        steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-split.csv')
         human_schedule = Schedule('schedule-1b-bhs-2019-2020-human.csv')
         steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam.csv')
 
