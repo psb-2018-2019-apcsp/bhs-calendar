@@ -8,7 +8,11 @@ For the academic years 2019-2020 and 2020-2021, [BHS](http://bhs.brookline.k12.m
 
 ## What we did
 
+- We created a minute-by-minute [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) based on the published BHS schedule [1B](./data/19_20_SCHED_v1B.pdf) with the following encoding:
+  - Blocks A, B, C, D, E, F, G, T (& T-H), X, & Z are identified with their numbers.
 - *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
+
+## Schedule webpages
 
 The current comparative schedules for the HUMAN lunch (currently called *Lunch A*) and the STEAM lunch  (currently called *Lunch B*) are here:
 
