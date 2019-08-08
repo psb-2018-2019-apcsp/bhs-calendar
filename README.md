@@ -1,6 +1,6 @@
 # bhs-calendar
 
-This is a project of the 2018-2019 [Brookline High School](http://bhs.brookline.k12.ma.us/career--technology-education.html) (BHS) [AP Computer Science Principles](https://sites.google.com/psbma.org/david-petty/archive/2018-2019/apcsp) class as a post-examination project completed (mostly) by juniors and sophomores in the class.
+This is a project of the 2018-2019 [Brookline High School](http://bhs.brookline.k12.ma.us/career--technology-education.html) (BHS) [AP Computer Science Principles](https://sites.google.com/psbma.org/david-petty/archive/2018-2019/apcsp) class as a post-examination project completed (mostly) by juniors and sophomores in the class and the class instructor. This effort has been further aided by teachers and administrators interested in developing and using the tool.
 
 ## New schedule
 
@@ -9,7 +9,9 @@ For the academic years 2019-2020 and 2020-2021, [BHS](http://bhs.brookline.k12.m
 ## What we did
 
 - We created a minute-by-minute [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) based on the published BHS schedule [1B](./data/19_20_SCHED_v1B.pdf) with the following encoding:
-  - Blocks A, B, C, D, E, F, G, T (& T-H), X, & Z are identified with their numbers.
+  - Blocks `A`, `B`, `C`, `D`, `E`, `F`, `G`, `T` (& `T-H`), `X`, & `Z` are identified with their numbers.
+  - Lunches are indicated as `LB` (lunch at BHS) and `LO` (lunch at OLS).
+  - Passing time is indicated with a variety of codes: `P` (regular passing time beween classes), `PB2O` (grade-9 passing from BHS to OLS), `PO2B` (grade-9 passing from OLS to BHS), `PS` (passing time before or after a 'split lunch'), and `?` (passing time taken from one block or the other when listed on the [schedule](./data/19_20_SCHED_v1B.pdf) as zero-length).
 - *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
 
 ## Schedule webpages
