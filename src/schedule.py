@@ -196,7 +196,8 @@ class Schedule:
       <section>
         <h2>{filename} &mdash; {date_time}</h2>
         <article>
-          <p>This file is available on <a href="https://github.com/psb-2018-2019-apcsp/bhs-calendar/">Github</a>&hellip;</p>
+          <p>This file is available on <a href="https://github.com/psb-2018-2019-apcsp/bhs-calendar/">Github</a> based on this <a href="{csvpath}">CSV</a>&hellip;</p>
+{extra}
           <ul>
             <li><span class="swatch short">&nbsp;</span> &mdash; passing time &lt; 5 minutes</li>
             <li><span class="swatch split">&nbsp;</span> &mdash; split lunch passing time (matched to other passing time for that day in that building)</li>
@@ -249,7 +250,7 @@ class Schedule:
 
         self._schedule = self._csv(self._csvpath)       # parse .CSV file
 
-        # Format comment.
+        # Format comment & extra.
         self._formatted_date_time = datetime.datetime.now().strftime('%c')
         # strftime('%a-%Y/%m/%d-%I:%M:%S%p%z')
         csv_comment = ''
@@ -258,6 +259,7 @@ class Schedule:
         self._comment = f"Created by {type(self).__name__} " \
             f"on {self._formatted_date_time} " \
             f"from CSV{':'} \n{csv_comment}"
+        self._extra = ''
 
         # Create blocks _dict w/ for each column of _schedule keyed w/ heading
         # w/ block entries for name, start, end, school, col, day, lunch
@@ -308,8 +310,11 @@ class Schedule:
                     start = end = self._minute(row[0])
             self._dict[day] = blocks
 
+        # Merge passing time with lunch
+        self._merge()
+
         # Format webpage based on _schedule and _dict and write it out.
-        self._page = self._webpage()
+        self._page = self._webpage(True)
         self.write(self._wwwpath)
 
     # ///////////////////////////// UTILITIES //////////////////////////////
@@ -355,9 +360,9 @@ class Schedule:
         return schedule
 
     @staticmethod
-    def _totals(block_dict, cohorts, echo=False):
-        """Return dict of totals for each block letter, including lunch ('L'),
-        as entries in a dict keyed by cohorts. Print totals, if echo."""
+    def _totals(block_dict, cohorts):
+        """Return dict of expressions for total for each block letter,
+        including lunch ('L'), as entries in a dict keyed by cohorts."""
         totals = dict()
         for name in cohorts:                            # cohort name
             totals[name] = dict()
@@ -368,25 +373,40 @@ class Schedule:
                     match = re.match(r'(\D+)\d+$', block.name())
                     if cohort == name and match:
                         c = match.group(1)
-                        totals[name][c] = \
-                            totals[name].get(c, 0) + block.duration()
+                        subtotal = totals[name].get(c, '')
+                        totals[name][c] = subtotal \
+                            + ('+' if subtotal else '') \
+                            + str(block.duration())
                     # Handle lunches separately.
                     if cohort == name and block.name().upper()[0] == 'L':
-                        totals[name]['L'] = \
-                            totals[name].get('L', 0) + block.duration()
-
-        # Conditionally echo totals.
-        if echo:
-            for c, t in totals.items():
-                print(f"{c}:", end=' ')
-                line = ''
-                for k in sorted(t.keys()):
-                    line += f"{k}={t[k]} "
-                print(line)
+                        subtotal = totals[name].get('L', '')
+                        totals[name]['L'] = subtotal \
+                            + ('+' if subtotal else '') \
+                            + str(block.duration())
 
         return totals
 
-    def _webpage(self):
+    def _merge(self):
+        """Merge passing time with lunch in self._dict."""
+        for key in self._dict.keys():
+            but1_index, and1_index = None, None
+            for i, block in enumerate(self._dict[key]):
+                if block.name()[0].upper() == 'L':
+                    if i > 0:
+                        but1, but1_index = self._dict[key][i - 1], i - 1
+                        if but1.name()[0].upper() in ['P', '?', ]:
+                            self._dict[key][i]._start = but1.start()
+                    if i < len(self._dict[key]):
+                        and1, and1_index = self._dict[key][i + 1], i + 1
+                        if and1.name()[0].upper() in ['P', '?', ]:
+                            self._dict[key][i]._end = and1.end()
+            if and1_index is not None:
+                del(self._dict[key][and1_index])
+            if but1_index is not None:
+                del(self._dict[key][but1_index])
+        print(self._dict)
+
+    def _webpage(self, verbose=False):
         """Return webpage based on _schedule and _dict.
         Note: there are three cohorts, hence the 'i % 3' code."""
         days = ''
@@ -453,7 +473,7 @@ class Schedule:
         names = ['BHS', 'Red', 'Blue', ]                # need this order
 
         # Calculate block totals by cohort and add cohort columns for totals.
-        totals = self._totals(self._dict, names, True)
+        totals = self._totals(self._dict, names)
         column = 'Totals'
         cohorts = ''
         style = f"totals"
@@ -461,8 +481,9 @@ class Schedule:
         for cohort in names:
             blocks = ''
             for key in sorted(keys):
+                value = eval(totals[cohort].get(key, '0'))
                 cls = 'total'
-                title = text = f"{key} = {totals[cohort].get(key, 0):03d}"
+                title = text = f"{key} = {value:03d}"
                 blocks += self._wrap(self._total_format.strip().format(
                     cls=cls, title=title, text=text),
                             4, 0) + '\n'        
@@ -471,6 +492,17 @@ class Schedule:
 
         days += self._wrap(self._cohorts_format.strip().format(
             column=column, cohorts=cohorts.rstrip()), 2, 0) + '\n'
+
+        # Conditionally include / echo calculation of totals.
+        if verbose:
+            for c, t in totals.items():
+                self._extra += ('\n' if self._extra else '') + f"{c}:"
+                line = ''
+                for k in sorted(t.keys()):
+                    line += f"\n  {k:3s} = {eval(t[k]):3d} = {t[k]}"
+                self._extra += line
+            print(self._extra)
+            self._extra = f"<pre>{self._extra}</pre>"
 
         # Format <main>.
         main = self._wrap(self._days_format.strip().format(
@@ -481,9 +513,12 @@ class Schedule:
         comment = self._wrap(self._comment, 4, 0)
         filename = self._filename
         date_time = self._formatted_date_time
+        csvpath = self._csvpath
+        extra = self._extra
         return self._webpage_format.strip().format(
             comment=comment, heading=heading, main=main,
-            filename=filename, date_time=date_time)
+            filename=filename, date_time=date_time, csvpath=csvpath,
+            extra=extra)
 
     def write(self, outpath=None):
         """Write self.page to outpath, or print if outpath is None."""
@@ -503,10 +538,12 @@ if __name__ == '__main__':
         '__file__' not in globals()
         )
     if is_idle or is_pycharm or is_jupyter:
-        human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-split.csv')
-        steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-split.csv')
-        human_schedule = Schedule('schedule-1b-bhs-2019-2020-human.csv')
-        steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam.csv')
+        # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-split.csv')
+        # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-split.csv')
+        # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-short.csv')
+        # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-short.csv')
+        human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
+        steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
 
         lipsum = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra ex vitae nisi volutpat, vitae elementum felis eleifend. Nullam laoreet ac nisl a dignissim. In sem libero, gravida commodo diam eu, egestas vehicula purus. Pellentesque laoreet maximus nunc, eget sollicitudin urna feugiat id. Sed aliquam purus ut leo pellentesque, euismod eleifend quam eleifend. Pellentesque eget urna sed nisl finibus facilisis. Aliquam consequat diam magna, in mollis leo posuere imperdiet. Ut fermentum bibendum pellentesque. Aenean eleifend massa nisi, et dictum justo sagittis id. Etiam sollicitudin et turpis at cursus. Proin nec est lectus. Nullam dui purus, imperdiet a mattis in, convallis dictum massa. Suspendisse nec fringilla nibh.
 
