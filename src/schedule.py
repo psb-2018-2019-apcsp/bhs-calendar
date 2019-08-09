@@ -404,7 +404,6 @@ class Schedule:
                 del(self._dict[key][and1_index])
             if but1_index is not None:
                 del(self._dict[key][but1_index])
-        print(self._dict)
 
     def _webpage(self, verbose=False):
         """Return webpage based on _schedule and _dict.
