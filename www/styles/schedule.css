@@ -26,7 +26,7 @@ header, footer h2 {
 .totals {
   border: thin solid gold;
 }
-p { line-height: 1em; margin: 0; overflow: hidden; }
+p { width: 100%; line-height: 1em; margin: 0; overflow: hidden; }
 .cohort { min-width: 16%; } /* for when there are six .totals */
 .cohorts { border: medium solid orange; margin: 1px;}
 .cohort-bhs { border: thin solid black; }
