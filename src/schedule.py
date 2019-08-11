@@ -5,12 +5,12 @@
 
 """Create 2019-2020 BHS schedule webpage."""
 
-import csv, datetime, os, re, sys
+import collections, csv, datetime, os, re, sys
 
 __author__ = "David C. Petty & 2018-2019 BHS APCSP"
 __copyright__ = "Copyright 2019, David C. Petty"
 __license__ = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __maintainer__ = "David C. Petty"
 __email__ = "david_petty@psbma.org"
 __status__ = "Hack"
@@ -21,41 +21,60 @@ __status__ = "Hack"
 
 class Heading:
     """Encodes parsed schedule column heading into: weekday, week, cohort,
-    e.g. parse 'Monday A BHS'"""
+    e.g. parse 'Monday A BHS'. If heading is e.g. 'Monday A BHS STEAM',
+    include lunch, otherwise Use default_lunch when only 3 tokens.
+    (This allows for two different heading formats.)"""
 
-    __regex = r'(\S+)\s+(\S+)\s+(\S+)'
+    __regex3 = r'(\S+)\s+(\S+)\s+(\S+)'     # 3 space-separated tokens
+    __regex4 = __regex3 + r'\s+(\S+)'       # 4 space-separated tokens
 
-    def __init__(self, heading):
+    def __init__(self, heading, default_lunch=None):
         """Initialize parsed schedule column heading."""
-        match = re.match(self.__regex, heading)
-        assert match, f"Heading '{heading}' must match regex '{self.__regex}'"
-        self._weekday = match.group(1)  # weekday from heading
-        self._week = match.group(2)     # week from heading
-        self._cohort = match.group(3)   # cohort from heading
+        match3 = re.match(self.__regex3, heading)
+        assert match3, f"Heading '{heading}' must match regex '{self.__regex3}'"
+        match4 = re.match(self.__regex4, heading)
+        self._weekday = match3.group(1)     # weekday from heading
+        self._week = match3.group(2)        # week from heading
+        self._cohort = match3.group(3)      # cohort from heading
+        self._lunch = match4.group(4) \
+            if match4 else default_lunch    # lunch from heading, or default
 
+    @property
     def weekday(self):
         """Return weekday string."""
         return self._weekday
         
+    @property
     def week(self):
         """Return week string."""
         return self._week
 
+    @property
     def cohort(self):
         """Return cohort string."""
         return self._cohort
 
     def _is_cohort(self, cohort):
         """Return true if self._cohort contains cohort."""
-        return cohort.upper() in self._cohort.upper()
+        return cohort.upper() in self.cohort.upper()
 
     def is_bhs(self): return self._is_cohort('BHS')
     def is_red(self): return self._is_cohort('RED')
     def is_blu(self): return self._is_cohort('BLU')
 
+    @property
+    def lunch(self):
+        """Return lunch string."""
+        return self._lunch
+
+    @property
+    def key(self):
+        """Return cohort + lunch[0] string, or just cohort if not lunch."""
+        return f"{self.cohort}-{self.lunch[0]}" if self.lunch else self.cohort
+
     def __str__(self):
         """Return string representation of Heading."""
-        return f"{self.weekday()}|{self.week()}|{self.cohort()}"
+        return f"{self.weekday}|{self.week}|{self.cohort}|{self.lunch}"
 
     __repr__ = __str__
 
@@ -73,34 +92,52 @@ class Block:
         self._day = day                 # day name
         self._lunch = lunch             # lunch name
 
+    @property
     def name(self):
         """Return name string."""
         return self._name
-        
+
+    @property
     def start(self):
         """Return start minute."""
         return self._start
 
+    @start.setter
+    def start(self, value):
+        """Set start minute."""
+        self._start = value
+
+    @property
     def end(self):
         """Return end minute."""
         return self._end
 
+    @end.setter
+    def end(self, value):
+        """Set end minute."""
+        self._end = value
+
+    @property
     def school(self):
         """Return school on [None, 'BHS', 'OLS', 'PB2O', 'PO2B']."""
         return self._school
 
+    @property
     def column(self):
         """Return column number."""
         return self._column
 
+    @property
     def day(self):
         """Return day string."""
         return self._day
 
+    @property
     def duration(self):
         """Return duration of this block."""
         return self._end - self._start + 1
 
+    @property
     def duration_str(self):
         """Return string for duration."""
         start = datetime.time(self._start // 60, self._start % 60) \
@@ -109,6 +146,7 @@ class Block:
             .strftime('%I:%M')          # %p
         return f"{start}-{end}"
 
+    @property
     def lunch(self):
         """Return lunch string."""
         return self._lunch
@@ -116,11 +154,10 @@ class Block:
     def __str__(self):
         """Return string representation of Block."""
         return f"{self._name}-" \
-            f"{self.duration_str()}-" \
-            f"{self.duration()}-" \
+            f"{self.duration_str}-" \
+            f"{self.duration}-" \
             f"{self._school}-" \
-            f"({Heading(self._day)})-" \
-            f"{self._lunch}-" \
+            f"({Heading(self._day, self._lunch)})-" \
             f"{self._column}"
 
     __repr__ = __str__
@@ -138,7 +175,13 @@ class Schedule:
             7:30 AM,Z1,Z1,,Z2, ...
             ...
 
-        Where the 0th row is a header with schedule name, followed by triples
+        OR
+
+            BOTH,Monday A BHS STEAM,Monday A Red STEAM,Monday A Blue STEAM, ...
+            7:30 AM,Z1,Z1,, ...
+            ...
+
+        where the 0th row is a header with schedule name, followed by triples
         of cohorts for as many cycle days as there are and the subsequent
         rows are times (in minutes) followed by triples of block names (or
         blank) for that cohort for that minute for that cycle day."""
@@ -224,7 +267,7 @@ class Schedule:
 """
         self._blocks_format = """
 <div class="cohort">
-  <div class={bs}>
+  <div class="{bs}">
     <h4>{cohort}</h4>
 {blocks}
   </div>
@@ -263,12 +306,12 @@ class Schedule:
 
         # Create blocks _dict w/ for each column of _schedule keyed w/ heading
         # w/ block entries for name, start, end, school, col, day, lunch
-        self._dict = dict()
-        lunch = self._schedule[0][0]                    # which lunch version
+        self._dict = collections.OrderedDict()          # maintain heading order
         pb2o, po2b = 'PB2O'.upper(), 'PO2B'.upper()     # to check for school
         for col in range(1, max([len(row) for row in self._schedule])):
             blocks = list()
             day, name = self._schedule[0][col], self._schedule[1][col]
+            lunch = Heading(day, self._schedule[0][0]).lunch
 
             # First find pb2o and po2b inter-school passing.
             first_b2o, last_b2o, first_o2b, last_o2b = None, None, None, None
@@ -298,6 +341,7 @@ class Schedule:
                         # OLS, if BLUE column and below PO2B (or no PO2B); or
                         # PB2O or PO2B, if passing schools;
                         # otherwise, BHS.
+                        # RED_FLAG: use Heading cohort tests
                         school = name if pb2o in name or po2b in name else \
                             'OLS' if ('RED' in day.upper() and
                                       (last_b2o is None or start > last_b2o)) \
@@ -309,7 +353,7 @@ class Schedule:
                     name = row[col]
                     start = end = self._minute(row[0])
             self._dict[day] = blocks
-
+        print(self._dict)
         # Merge passing time with lunch
         self._merge()
 
@@ -341,8 +385,8 @@ class Schedule:
             if c == '\n':
                 result += '\n' + space * indent + text[start: i]
                 start = last = i + 1
-        result += '\n' + space * indent + text.strip()[start: ]
-        return result[1: ]
+        result += '\n' + space * indent + text.strip()[start:]
+        return result[1:]
 
     @staticmethod
     def _scale(x, factor=3):
@@ -360,7 +404,7 @@ class Schedule:
         return schedule
 
     @staticmethod
-    def _totals(block_dict, cohorts):
+    def _totals(block_dict, cohorts, default_lunch=None):
         """Return dict of expressions for total for each block letter,
         including lunch ('L'), as entries in a dict keyed by cohorts."""
         totals = dict()
@@ -368,22 +412,21 @@ class Schedule:
             totals[name] = dict()
             for key, blocks in block_dict.items():
                 for block in blocks:
-                    cohort = Heading(block.day()).cohort()
+                    key = Heading(block.day, default_lunch).key
                     # Match block letter(s) followed by number(s).
-                    match = re.match(r'(\D+)\d+$', block.name())
-                    if cohort == name and match:
+                    match = re.match(r'(\D+)\d+$', block.name)
+                    if key == name and match:
                         c = match.group(1)
                         subtotal = totals[name].get(c, '')
                         totals[name][c] = subtotal \
                             + ('+' if subtotal else '') \
-                            + str(block.duration())
+                            + str(block.duration)
                     # Handle lunches separately.
-                    if cohort == name and block.name().upper()[0] == 'L':
+                    if key == name and block.name.upper()[0] == 'L':
                         subtotal = totals[name].get('L', '')
                         totals[name]['L'] = subtotal \
                             + ('+' if subtotal else '') \
-                            + str(block.duration())
-
+                            + str(block.duration)
         return totals
 
     def _merge(self):
@@ -391,15 +434,15 @@ class Schedule:
         for key in self._dict.keys():
             but1_index, and1_index = None, None
             for i, block in enumerate(self._dict[key]):
-                if block.name()[0].upper() == 'L':
+                if block.name[0].upper() == 'L':
                     if i > 0:
                         but1, but1_index = self._dict[key][i - 1], i - 1
-                        if but1.name()[0].upper() in ['P', '?', ]:
-                            self._dict[key][i]._start = but1.start()
+                        if but1.name[0].upper() in ['P', '?', ]:
+                            self._dict[key][i].start = but1.start
                     if i < len(self._dict[key]):
                         and1, and1_index = self._dict[key][i + 1], i + 1
-                        if and1.name()[0].upper() in ['P', '?', ]:
-                            self._dict[key][i]._end = and1.end()
+                        if and1.name[0].upper() in ['P', '?', ]:
+                            self._dict[key][i].end = and1.end
             if and1_index is not None:
                 del(self._dict[key][and1_index])
             if but1_index is not None:
@@ -410,22 +453,22 @@ class Schedule:
         Note: there are three cohorts, hence the 'i % 3' code."""
         days = ''
         # Process every column, keeping three cohorts together for every day.
-        for i, key in enumerate(self._schedule[0][1: ]):
+        for i, key in enumerate(self._schedule[0][1:]):
             if i % 3 == 0:                              # start of a new day
                 cohorts = ''
-            head = Heading(key)
-            column = f"{head.weekday()} - {head.week()}"
+            head = Heading(key, self._schedule[0][0])
+            column = f"{head.weekday} - {head.week} - {head.lunch[0]}"
             style = f"blocks"
-            cohort = head.cohort()
+            cohort = head.cohort
             # Add skip to empty paragraph for empty block at start of day.
-            skip = self._scale(self._dict[key][0].start()
+            skip = self._scale(self._dict[key][0].start
                 - self._minute(self._schedule[1][0]))
             skip += 2 if skip else 0                    # adjust for border(s)
             blocks = \
                 f"""    <p class="start" style="height: {skip}px;"></p>\n"""
             # Add a paragraph for every block to cohort.
             for block in self._dict[key]:
-                name = block.name().upper()
+                name = block.name.upper()
                 is_passing = name[0] in ['P', '?', ]
                 is_passing_split = name in ['PS', ]
                 is_passing_question = name in ['?', ]
@@ -438,24 +481,24 @@ class Schedule:
                         cls += f" split"
                     if is_passing_question:
                         cls += f" question"
-                    if block.duration() < 5:
+                    if block.duration < 5:
                         cls += f" short"
                 else:
-                    school = block.school()
+                    school = block.school
                     cls = f"school-{name.lower()}" \
                         if is_school_passing \
                         else f"block cohort-{cohort.lower()} " \
                             f"school-{school.lower()}"
-                    text = f"{block.name()}<br />" \
-                        f"{block.duration_str()}<br />" \
-                        f"{block.duration()}"
+                    text = f"{block.name}<br />" \
+                        f"{block.duration_str}<br />" \
+                        f"{block.duration}"
                     if name[0] in ['L', ]:              # add lunch class
                         cls += f" lunch"
-                pad = self._scale(block.duration())
+                pad = self._scale(block.duration)
                 title = f"{name} @ " \
                     f"{school}: " \
-                    f"{block.duration_str()} = " \
-                    f"{block.duration()}"
+                    f"{block.duration_str} = " \
+                    f"{block.duration}"
                 blocks += self._wrap(self._block_format.strip().format(
                     cls=cls, pad=pad, title=title, text=text),
                         4, 0) + '\n'
@@ -465,14 +508,13 @@ class Schedule:
                 days += self._wrap(self._cohorts_format.strip().format(
                     column=column, cohorts=cohorts.rstrip()), 2, 0) + '\n'
 
-        # Names are block cohort names in _dict.
-        names = set()
+        # Names are Heading.key from _dict.keys().
+        names = collections.OrderedDict()               # maintain key order
         for key in self._dict.keys():
-            names.add(Heading(key).cohort())
-        names = ['BHS', 'Red', 'Blue', ]                # need this order
+            names[f"{Heading(key, self._schedule[0][0]).key}"] = None
 
         # Calculate block totals by cohort and add cohort columns for totals.
-        totals = self._totals(self._dict, names)
+        totals = self._totals(self._dict, names.keys(), self._schedule[0][0])
         column = 'Totals'
         cohorts = ''
         style = f"totals"
@@ -543,6 +585,7 @@ if __name__ == '__main__':
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-short.csv')
         human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
         steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
+        both_schedule = Schedule('schedule-1b-bhs-2019-2020-both.csv')
 
         lipsum = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra ex vitae nisi volutpat, vitae elementum felis eleifend. Nullam laoreet ac nisl a dignissim. In sem libero, gravida commodo diam eu, egestas vehicula purus. Pellentesque laoreet maximus nunc, eget sollicitudin urna feugiat id. Sed aliquam purus ut leo pellentesque, euismod eleifend quam eleifend. Pellentesque eget urna sed nisl finibus facilisis. Aliquam consequat diam magna, in mollis leo posuere imperdiet. Ut fermentum bibendum pellentesque. Aenean eleifend massa nisi, et dictum justo sagittis id. Etiam sollicitudin et turpis at cursus. Proin nec est lectus. Nullam dui purus, imperdiet a mattis in, convallis dictum massa. Suspendisse nec fringilla nibh.
 
