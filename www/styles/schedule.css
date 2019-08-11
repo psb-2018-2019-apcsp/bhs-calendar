@@ -6,6 +6,9 @@ body {
 h1, h2, h3, h4, div {
   line-height: 1em; margin: 0px; font-size: 100%;
 }
+/* main {
+  min-width: 198em;
+}*/
 header, footer h2 {
   text-align: center;
 }
@@ -14,14 +17,17 @@ header, footer h2 {
 }
 .days, .cohorts { display: flex; flex-direction: row; flex-wrap: nowrap;
   justify-content: space-evenly; align-items: flex-start;
+  display: inline-flex; /* needed so .days will grow to fit items */
 }
 .day, .blocks, .totals { display: flex; flex-direction: column; flex-wrap: nowrap;
   justify-content: flex-start; align-items: flex-start;
 }
+/* .day { flex: 1 0 4.5%; }    /* allow for 22 .day s */
 .totals {
   border: thin solid gold;
 }
-p { width: 100%; line-height: 1em; margin: 0; overflow: hidden; }
+p { line-height: 1em; margin: 0; overflow: hidden; }
+.cohort { min-width: 16%; } /* for when there are six .totals */
 .cohorts { border: medium solid orange; margin: 1px;}
 .cohort-bhs { border: thin solid black; }
 .cohort-red { border: thin solid red; }
