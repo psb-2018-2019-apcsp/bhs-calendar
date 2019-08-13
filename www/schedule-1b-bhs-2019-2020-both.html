@@ -11,8 +11,26 @@
     <link href="./styles/schedule.css" rel="stylesheet">
     <script src="./scripts/schedule.js"></script>
   </head>
-  <!--
-    Created by Schedule on Sun Aug 11 09:15:53 2019 from CSV: 
+  <!-- http://patorjk.com/software/taag/    # ASCII art generator
+
+ /$$$$$$$  /$$   /$$  /$$$$$$         /$$$$$$            /$$                       /$$           /$$          
+| $$__  $$| $$  | $$ /$$__  $$       /$$__  $$          | $$                      | $$          | $$          
+| $$  \ $$| $$  | $$| $$  \__/      | $$  \__/  /$$$$$$$| $$$$$$$   /$$$$$$   /$$$$$$$ /$$   /$$| $$  /$$$$$$ 
+| $$$$$$$ | $$$$$$$$|  $$$$$$       |  $$$$$$  /$$_____/| $$__  $$ /$$__  $$ /$$__  $$| $$  | $$| $$ /$$__  $$
+| $$__  $$| $$__  $$ \____  $$       \____  $$| $$      | $$  \ $$| $$$$$$$$| $$  | $$| $$  | $$| $$| $$$$$$$$
+| $$  \ $$| $$  | $$ /$$  \ $$       /$$  \ $$| $$      | $$  | $$| $$_____/| $$  | $$| $$  | $$| $$| $$_____/
+| $$$$$$$/| $$  | $$|  $$$$$$/      |  $$$$$$/|  $$$$$$$| $$  | $$|  $$$$$$$|  $$$$$$$|  $$$$$$/| $$|  $$$$$$$
+|_______/ |__/  |__/ \______/        \______/  \_______/|__/  |__/ \_______/ \_______/ \______/ |__/ \_______/
+        /$$$$$$   /$$$$$$   /$$$$$$    /$$    /$$$$$$          /$$$$$$   /$$$$$$   /$$$$$$   /$$$$$$          
+       /$$__  $$ /$$$_  $$ /$$$_  $$ /$$$$   /$$__  $$        /$$__  $$ /$$$_  $$ /$$__  $$ /$$$_  $$         
+      |__/  \ $$| $$$$\ $$| $$$$\ $$|_  $$  | $$  \ $$       |__/  \ $$| $$$$\ $$|__/  \ $$| $$$$\ $$         
+        /$$$$$$/| $$ $$ $$| $$ $$ $$  | $$  |  $$$$$$$ /$$$$$$ /$$$$$$/| $$ $$ $$  /$$$$$$/| $$ $$ $$         
+       /$$____/ | $$\ $$$$| $$\ $$$$  | $$   \____  $$|______//$$____/ | $$\ $$$$ /$$____/ | $$\ $$$$         
+      | $$      | $$ \ $$$| $$ \ $$$  | $$   /$$  \ $$       | $$      | $$ \ $$$| $$      | $$ \ $$$         
+      | $$$$$$$$|  $$$$$$/|  $$$$$$/ /$$$$$$|  $$$$$$/       | $$$$$$$$|  $$$$$$/| $$$$$$$$|  $$$$$$/         
+      |________/ \______/  \______/ |______/ \______/        |________/ \______/ |________/ \______/          
+
+    Created by Schedule on Tue Aug 13 10:44:18 2019 from CSV: 
     ['BOTH', 'Monday A BHS HUMAN', 'Monday A Red HUMAN', 'Monday A Blue HUMAN', 'Monday A BHS STEAM', 'Monday A Red STEAM', 'Monday A Blue STEAM', 'Tuesday A BHS HUMAN', 'Tuesday  A Red HUMAN', 'Tuesday A Blue HUMAN', 'Tuesday A BHS STEAM', 'Tuesday  A Red STEAM', 'Tuesday A Blue STEAM', 'Wednesday A BHS HUMAN', 'Wednesday A Red HUMAN', 'Wednesday A Blue HUMAN', 'Wednesday A BHS STEAM', 'Wednesday A Red STEAM', 'Wednesday A Blue STEAM', 'Thursday A BHS HUMAN', 'Thursday A Red HUMAN', 'Thursday A Blue HUMAN', 'Thursday A BHS STEAM', 'Thursday A Red STEAM', 'Thursday A Blue STEAM', 'Friday A BHS HUMAN', 'Friday A Red HUMAN', 'Friday A Blue HUMAN', 'Friday A BHS STEAM', 'Friday A Red STEAM', 'Friday A Blue STEAM', 'Monday B BHS HUMAN', 'Monday B Red HUMAN', 'Monday B Blue HUMAN', 'Monday B BHS STEAM', 'Monday B Red STEAM', 'Monday B Blue STEAM', 'Tuesday B BHS HUMAN', 'Tuesday B Red HUMAN', 'Tuesday B Blue HUMAN', 'Tuesday B BHS STEAM', 'Tuesday B Red STEAM', 'Tuesday B Blue STEAM', 'Wednesday B BHS HUMAN', 'Wednesday B Red HUMAN', 'Wednesday B Blue HUMAN', 'Wednesday B BHS STEAM', 'Wednesday B Red STEAM', 'Wednesday B Blue STEAM', 'Thursday B BHS HUMAN', 'Thursday B Red HUMAN', 'Thursday B Blue HUMAN', 'Thursday B BHS STEAM', 'Thursday B Red STEAM', 'Thursday B Blue STEAM', 'Friday B  BHS HUMAN', 'Friday B Red HUMAN', 'Friday B Blue HUMAN', 'Friday B  BHS STEAM', 'Friday B Red STEAM', 'Friday B Blue STEAM']
     ['7:30 AM', 'Z1', 'Z1', '', 'Z1', 'Z1', '', 'Z2', '', '', 'Z2', '', '', 'Z3', 'Z3', '', 'Z3', 'Z3', '', 'Z4', 'Z4', '', 'Z4', 'Z4', '', 'Z5', 'Z5', '', 'Z5', 'Z5', '', 'Z6', 'Z6', '', 'Z6', 'Z6', '', 'Z7', 'Z7', '', 'Z7', 'Z7', '', 'Z8', 'Z8', '', 'Z8', 'Z8', '', '', '', '', '', '', '', 'Z9', 'Z9', '', 'Z9', 'Z9', '']
     ['7:31 AM', 'Z1', 'Z1', '', 'Z1', 'Z1', '', 'Z2', '', '', 'Z2', '', '', 'Z3', 'Z3', '', 'Z3', 'Z3', '', 'Z4', 'Z4', '', 'Z4', 'Z4', '', 'Z5', 'Z5', '', 'Z5', 'Z5', '', 'Z6', 'Z6', '', 'Z6', 'Z6', '', 'Z7', 'Z7', '', 'Z7', 'Z7', '', 'Z8', 'Z8', '', 'Z8', 'Z8', '', '', '', '', '', '', '', 'Z9', 'Z9', '', 'Z9', 'Z9', '']
@@ -1782,7 +1800,7 @@
     <!-- FOOTER -->
     <footer>
       <section>
-        <h2>schedule-1b-bhs-2019-2020-both &mdash; Sun Aug 11 09:15:53 2019</h2>
+        <h2>schedule-1b-bhs-2019-2020-both &mdash; Tue Aug 13 10:44:18 2019</h2>
         <article>
           <p>This file is available on <a href="https://github.com/psb-2018-2019-apcsp/bhs-calendar/">Github</a> based on this <a href="../data/schedule-1b-bhs-2019-2020-both.csv">CSV</a>&hellip;</p>
 <pre>BHS-H:
