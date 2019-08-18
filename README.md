@@ -9,14 +9,35 @@ For the academic years 2019-2020 and 2020-2021, [BHS](http://bhs.brookline.k12.m
 ## What we did
 
 - We created a minute-by-minute [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) based on the published BHS schedule [1B](./data/19_20_SCHED_v1B.pdf) with the following encoding:
+  - The top row contains the name of the schedule's lunch in the leftmost column &mdash; the `HUMAN` lunch (currently called *Lunch A*) or the `STEAM` lunch  (currently called *Lunch B*) &mdash; followed by headers for each cohort for each day formatted as either 3 or 4 space-separated values: *day, week, cohort* or *day, week, cohort, lunch* (when more than one lunch is included in the single schedule).
+  - The leftmost column contains the name of the schedule's lunch in the top row, followed by the minute-by-minute time from `7:30 AM` to `3:00 PM` inclusive, one minute per row.
   - Blocks `A`, `B`, `C`, `D`, `E`, `F`, `G`, `T` (& `T-H`), `X`, & `Z` are identified with their numbers.
   - Lunches are indicated as `LB` (lunch at BHS) and `LO` (lunch at OLS).
   - Passing time is indicated with a variety of codes: `P` (regular passing time beween classes), `PB2O` (grade-9 passing from BHS to OLS), `PO2B` (grade-9 passing from OLS to BHS), `PS` (passing time before or after a 'split lunch'), and `?` (passing time taken from one block or the other when listed on the [schedule](./data/19_20_SCHED_v1B.pdf) as zero-length).
+- Within the [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) we created worksheets (tabs) for different lunches (`HUMAN`, `STEAM`, &amp; `BOTH`), as well as difference-calculator worksheets used to flag differences between cohort times.
+- From these worksheets, we created (rectangular) .[CSV](https://en.wikipedia.org/wiki/Comma-separated_values#RFC_4180_standard) files for each schedule to analyze.
+  - Files with headers having 3 space-seperated values (*day, week, cohort*) ![example STEAM .CSV file](./images/csv-steam.png)
+  - Files with headers having 4 space-seperated values (*day, week, cohort, lunch*) ![example BOTH .CSV file](./images/csv-both.png)
 - *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
+
+## Phases
+
+This project has three phases.
+
+- &#9746; **Phase 1**:
+  - Create [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/)s for each schedule (*day, week, cohort, lunch*) so that (a) every block is correctly filled in minute by minute and (b) passing time and lunch durations are specified so that the total duration of every block is close to equal (435 minutes) during the cycle.
+  - Create schedule webpages for each schedule of interest that (a) have block sizes proportional to their duration, (b) color code special passing times and lunches, and (c) list block totals for each cohort for comparison.
+- &#9744; **Phase 2** &mdash;
+  - Create a [spreadsheet](https://drive.google.com/open?id=1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) for the 2019-2020 calendar with (a) weeks correctly identified and (b) known special days identified.
+  - Create [iCalendar](https://icalendar.org/) version(s) of the calendar and schedule with (a) each block for each weekday, week, cohort, and lunch has the correct timing reflective of the [schedule](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) and [calendar](https://drive.google.com/open?id=1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) spreadsheets and (b) the iCalendar is *minimal* (TBD what that means).
+- &#9744; **Phase 3** &mdash;
+  - The generated [iCalendar](https://icalendar.org/) can be *customized* (TBD what that means) on a webpage and generated on a per-person basis
+
+*More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
 
 ## Schedule webpages
 
-The current comparative schedules for the HUMAN lunch (currently called *Lunch A*) and the STEAM lunch  (currently called *Lunch B*) are here:
+The current comparative schedules for `HUMAN` lunch and `STEAM` lunch are here:
 
 Version | HUMAN | STEAM
 ---- | ---- | ----
@@ -44,5 +65,6 @@ The **both** schedule is based on the [both](./data/schedule-1b-bhs-2019-2020-bo
 - [https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) &mdash; schedule spreadsheet
 - [https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/](https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) &mdash; calendar spreadsheet
 - [https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/](https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/) &mdash; a draft specification and use cases
+- [https://icalendar.org/](https://icalendar.org/) &mdash; the RFC-7986 iCalendar specification
 - [https://github.com/bast/somepackage](https://github.com/bast/somepackage) &mdash; this [Python](https://docs.python.org/3/) poject is structured after Radovan Bast's `somepackage` project
 - [https://github.com/psb-2018-2019-apcsp/bhs-calendar](https://github.com/psb-2018-2019-apcsp/bhs-calendar) &mdash; the [Github](https://github.com/) repo for this project
