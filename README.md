@@ -18,6 +18,7 @@ For the academic years 2019-2020 and 2020-2021, [BHS](http://bhs.brookline.k12.m
 - From these worksheets, we created (rectangular) .[CSV](https://en.wikipedia.org/wiki/Comma-separated_values#RFC_4180_standard) files for each schedule to analyze.
   - Files with headers having 3 space-seperated values (*day, week, cohort*) ![example STEAM .CSV file](./images/csv-steam.png)
   - Files with headers having 4 space-seperated values (*day, week, cohort, lunch*) ![example BOTH .CSV file](./images/csv-both.png)
+- We wrote [Python](https://docs.python.org/3/) scripts (available in [`./src/`](https://github.com/psb-2018-2019-apcsp/bhs-calendar/tree/master/src)) to generate .HTML files (available in [`./www/`](https://github.com/psb-2018-2019-apcsp/bhs-calendar/tree/master/www)).
 - *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
 
 ## Phases
@@ -27,6 +28,7 @@ This project has three phases.
 - &#9746; **Phase 1**:
   - Create [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/)s for each schedule (*day, week, cohort, lunch*) so that (a) every block is correctly filled in minute by minute and (b) passing time and lunch durations are specified so that the total duration of every block is close to equal (435 minutes) during the cycle.
   - Create schedule webpages for each schedule of interest that (a) have block sizes proportional to their duration, (b) color code special passing times and lunches, and (c) list block totals for each cohort for comparison.
+  - Also display at the botttom of the webpages (a) the total calculations for each cohort for each lunch and (b) a no-passing-time schedule formatted as a table (for easy copying to a spreadsheet or document table).
 - &#9744; **Phase 2** &mdash;
   - Create a [spreadsheet](https://drive.google.com/open?id=1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) for the 2019-2020 calendar with (a) weeks correctly identified and (b) known special days identified.
   - Create [iCalendar](https://icalendar.org/) version(s) of the calendar and schedule with (a) each block for each weekday, week, cohort, and lunch has the correct timing reflective of the [schedule](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) and [calendar](https://drive.google.com/open?id=1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) spreadsheets and (b) the iCalendar is *minimal* (TBD what that means).
