@@ -580,8 +580,8 @@ class Schedule:
 
         # Create table of non-passing blocks.
         table_format = """<hr class="no-pass" />\n""" \
-            """<table class="no-pass">\n{header}\n{rows}\n</table>"""
-        row_format = """  <tr>\n{row}  </tr>"""
+            """<table class="no-pass">\n{header}{rows}</table>"""
+        row_format = """  <tr>\n{row}  </tr>\n"""
         cell_format = """    <t{hd} title="{title}">{cell}</t{hd}>\n"""
 
         row = ''
@@ -645,8 +645,8 @@ if __name__ == '__main__':
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-split.csv')
         # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-short.csv')
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-short.csv')
-        human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
-        steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
+        # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
+        # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
         both_schedule = Schedule('schedule-1b-bhs-2019-2020-both.csv')
 
         lipsum = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra ex vitae nisi volutpat, vitae elementum felis eleifend. Nullam laoreet ac nisl a dignissim. In sem libero, gravida commodo diam eu, egestas vehicula purus. Pellentesque laoreet maximus nunc, eget sollicitudin urna feugiat id. Sed aliquam purus ut leo pellentesque, euismod eleifend quam eleifend. Pellentesque eget urna sed nisl finibus facilisis. Aliquam consequat diam magna, in mollis leo posuere imperdiet. Ut fermentum bibendum pellentesque. Aenean eleifend massa nisi, et dictum justo sagittis id. Etiam sollicitudin et turpis at cursus. Proin nec est lectus. Nullam dui purus, imperdiet a mattis in, convallis dictum massa. Suspendisse nec fringilla nibh.
