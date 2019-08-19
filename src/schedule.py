@@ -151,6 +151,18 @@ class Block:
         """Return lunch string."""
         return self._lunch
 
+    @property
+    def is_passing(self):
+        """Return True if self._name is any of the passing block names."""
+        return self._name[0] in ['P', '?']
+
+    @property
+    def html_str(self):
+        """Return HTML cell string representation of block."""
+        return f"{self._name}<br />" \
+            f"{self.duration_str}<br />" \
+            f"{self.duration}"
+
     def __str__(self):
         """Return string representation of Block."""
         return f"{self._name}-" \
@@ -310,6 +322,9 @@ class Schedule:
         self._wwwpath = os.path.join(self._wwwdir, self._filename + '.html')
 
         self._schedule = self._csv(self._csvpath)       # parse .CSV file
+        assert len(set(len(l) for l in self._schedule)) == 1, \
+            f"self._schedule not rectangular (line lengths are " \
+            f"{set(len(l) for l in self._schedule)})"
 
         # Format comment & extra.
         self._formatted_date_time = datetime.datetime.now().strftime('%c')
@@ -371,7 +386,7 @@ class Schedule:
                     name = row[col]
                     start = end = self._minute(row[0])
             self._dict[day] = blocks
-        print(self._dict)
+        print(self._dict)                               # TODO: debugging
         # Merge passing time with lunch
         self._merge()
 
@@ -552,16 +567,45 @@ class Schedule:
         days += self._wrap(self._cohorts_format.strip().format(
             column=column, cohorts=cohorts.rstrip()), 2, 0) + '\n'
 
-        # Conditionally include / echo calculation of totals.
+        # Conditionally include calculation of totals.
+        for c, t in totals.items():
+            self._extra += ('\n' if self._extra else '') + f"{c}:"
+            line = ''
+            for k in sorted(t.keys()):
+                line += f"\n  {k:3s} = {eval(t[k]):3d} = {t[k]}"
+            self._extra += line
+        print(self._extra)
         if verbose:
-            for c, t in totals.items():
-                self._extra += ('\n' if self._extra else '') + f"{c}:"
-                line = ''
-                for k in sorted(t.keys()):
-                    line += f"\n  {k:3s} = {eval(t[k]):3d} = {t[k]}"
-                self._extra += line
-            print(self._extra)
-            self._extra = f"<pre>{self._extra}</pre>"
+            self._extra = f"<pre class=\"calculations\">{self._extra}</pre>"
+
+        # Create table of non-passing blocks.
+        table_format = """<hr class="no-pass" />\n""" \
+            """<table class="no-pass">\n{header}\n{rows}\n</table>"""
+        row_format = """  <tr>\n{row}  </tr>"""
+        cell_format = """    <t{hd} title="{title}">{cell}</t{hd}>\n"""
+
+        row = ''
+        for key in self._dict:
+            row += cell_format.format(cell=f"{key}", title=f"{key}", hd='h')
+        header = row_format.format(row=row)
+
+        schedule = collections.OrderedDict()
+        for key in self._dict:
+            schedule[key] = [b for b in self._dict[key] if not b.is_passing]
+        length = max((len(schedule[key]) for key in schedule))
+        rows = ''
+        for i in range(length):
+            row = ''
+            for key in schedule:
+                column = schedule[key]
+                cell = column[i].html_str if i < len(column) else ''
+                title = column[i] if i < len(column) else ''
+                row += cell_format.format(cell=cell, title=title, hd='d')
+            rows += row_format.format(row=row)
+        table = self._wrap(table_format.format(header=header, rows=rows), 10, 0)
+
+        if verbose:
+            self._extra += f"\n{table}"
 
         # Format <main>.
         main = self._wrap(self._days_format.strip().format(
@@ -601,8 +645,8 @@ if __name__ == '__main__':
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-split.csv')
         # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-short.csv')
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-short.csv')
-        # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
-        # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
+        human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
+        steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
         both_schedule = Schedule('schedule-1b-bhs-2019-2020-both.csv')
 
         lipsum = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra ex vitae nisi volutpat, vitae elementum felis eleifend. Nullam laoreet ac nisl a dignissim. In sem libero, gravida commodo diam eu, egestas vehicula purus. Pellentesque laoreet maximus nunc, eget sollicitudin urna feugiat id. Sed aliquam purus ut leo pellentesque, euismod eleifend quam eleifend. Pellentesque eget urna sed nisl finibus facilisis. Aliquam consequat diam magna, in mollis leo posuere imperdiet. Ut fermentum bibendum pellentesque. Aenean eleifend massa nisi, et dictum justo sagittis id. Etiam sollicitudin et turpis at cursus. Proin nec est lectus. Nullam dui purus, imperdiet a mattis in, convallis dictum massa. Suspendisse nec fringilla nibh.
