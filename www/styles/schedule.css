@@ -68,3 +68,4 @@ p { width: 100%; line-height: 1em; margin: 0; overflow: hidden; }
   rgba(0, 96, 0.5), rgba(128, 255, 0, 0.5),
   rgba(0, 96, 0.5), rgba(128, 255, 0, 0.5)
 ); }
+.calculations, .no-pass { display: auto; }
