@@ -5,18 +5,20 @@
 
 """Create 2019-2020 BHS schedule webpage."""
 
-import collections, csv, datetime, os, re, sys
+import collections
+import csv
+import datetime
+import os
+import re
+import sys
 
 __author__ = "David C. Petty & 2018-2019 BHS APCSP"
 __copyright__ = "Copyright 2019, David C. Petty"
 __license__ = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
-__version__ = "0.0.3"
+__version__ = "0.1.0"
 __maintainer__ = "David C. Petty"
 __email__ = "david_petty@psbma.org"
 __status__ = "Hack"
-
-# http://code.activestate.com/recipes/577070-bound-inner-classes/
-# for a bound inner class decorator...
 
 
 class Heading:
@@ -80,7 +82,7 @@ class Heading:
 
 
 class Block:
-    """Encodes data on schedule blocks."""
+    """Encodes data on schedule blocks with useful @properties and strs."""
 
     def __init__(self, name, start, end, school, column, day, lunch):
         """Initialize schedule block class."""
@@ -133,6 +135,16 @@ class Block:
         return self._day
 
     @property
+    def lunch(self):
+        """Return lunch string."""
+        return self._lunch
+
+    @property
+    def is_passing(self):
+        """Return True if self._name is any of the passing block names."""
+        return self._name[0].upper() in ['P', '?']
+
+    @property
     def duration(self):
         """Return duration of this block."""
         return self._end - self._start + 1
@@ -145,16 +157,6 @@ class Block:
         end = datetime.time((self._end + 1) // 60, (self._end + 1) % 60) \
             .strftime('%I:%M')          # %p
         return f"{start}-{end}"
-
-    @property
-    def lunch(self):
-        """Return lunch string."""
-        return self._lunch
-
-    @property
-    def is_passing(self):
-        """Return True if self._name is any of the passing block names."""
-        return self._name[0] in ['P', '?']
 
     @property
     def html_str(self):
@@ -428,8 +430,7 @@ class Schedule:
 
     @staticmethod
     def _csv(csvpath):
-        """Return csv file as 2d list.
-        """
+        """Return csv file as 2d list."""
         with open(csvpath) as csvfile:
             schedule, schedulereader = list(), csv.reader(csvfile)
             for row in schedulereader:
@@ -470,11 +471,11 @@ class Schedule:
                 if block.name[0].upper() == 'L':
                     if i > 0:
                         but1, but1_index = self._dict[key][i - 1], i - 1
-                        if but1.name[0].upper() in ['P', '?', ]:
+                        if but1.is_passing:
                             self._dict[key][i].start = but1.start
                     if i < len(self._dict[key]):
                         and1, and1_index = self._dict[key][i + 1], i + 1
-                        if and1.name[0].upper() in ['P', '?', ]:
+                        if and1.is_passing:
                             self._dict[key][i].end = and1.end
             if and1_index is not None:
                 del(self._dict[key][and1_index])
@@ -484,6 +485,8 @@ class Schedule:
     def _webpage(self, verbose=False):
         """Return webpage based on _schedule and _dict.
         Note: there are three cohorts, hence the 'i % 3' code."""
+
+        # Format days and cohorts.
         days = ''
         # Process every column, keeping three cohorts together for every day.
         for i, key in enumerate(self._schedule[0][1:]):
@@ -502,7 +505,7 @@ class Schedule:
             # Add a paragraph for every block to cohort.
             for block in self._dict[key]:
                 name = block.name.upper()
-                is_passing = name[0] in ['P', '?', ]
+                is_passing = block.is_passing           # TODO: add these tests
                 is_passing_split = name in ['PS', ]
                 is_passing_question = name in ['?', ]
                 is_school_passing = name in ['PB2O', 'PO2B', ]
@@ -564,10 +567,11 @@ class Schedule:
             cohorts += self._wrap(self._blocks_format.strip().format(
                 bs=style, cohort=cohort, blocks=blocks.rstrip()), 4, 0) + '\n'
 
+        # Format days.
         days += self._wrap(self._cohorts_format.strip().format(
             column=column, cohorts=cohorts.rstrip()), 2, 0) + '\n'
 
-        # Conditionally include calculation of totals.
+        # Conditionally format extra with calculation of totals.
         for c, t in totals.items():
             self._extra += ('\n' if self._extra else '') + f"{c}:"
             line = ''
@@ -578,21 +582,25 @@ class Schedule:
         if verbose:
             self._extra = f"<pre class=\"calculations\">{self._extra}</pre>"
 
-        # Create table of non-passing blocks.
+        # Conditionally format extra with table of non-passing blocks.
         table_format = """<hr class="no-pass" />\n""" \
             """<table class="no-pass">\n{header}{rows}</table>"""
         row_format = """  <tr>\n{row}  </tr>\n"""
         cell_format = """    <t{hd} title="{title}">{cell}</t{hd}>\n"""
 
+        # Format header.
         row = ''
         for key in self._dict:
             row += cell_format.format(cell=f"{key}", title=f"{key}", hd='h')
         header = row_format.format(row=row)
 
+        # Copy self._dict to schedule, removing all passing-time blocks.
         schedule = collections.OrderedDict()
         for key in self._dict:
             schedule[key] = [b for b in self._dict[key] if not b.is_passing]
         length = max((len(schedule[key]) for key in schedule))
+
+        # Format rows.
         rows = ''
         for i in range(length):
             row = ''
@@ -602,6 +610,8 @@ class Schedule:
                 title = column[i] if i < len(column) else ''
                 row += cell_format.format(cell=cell, title=title, hd='d')
             rows += row_format.format(row=row)
+
+        # Format table.
         table = self._wrap(table_format.format(header=header, rows=rows), 10, 0)
 
         if verbose:
@@ -659,3 +669,6 @@ Duis accumsan hendrerit leo non placerat. Donec pretium eros urna, in semper neq
 #         print('1234567890' * 8)
 #         print('"{}"'.format(human_schedule._wrap(lipsum, 6)))
 #         print(Block('FOO', 100, 199, 'BHS', 47, 'BAR BLAP FRAB', 'STEAM'))
+
+# http://code.activestate.com/recipes/577070-bound-inner-classes/
+# for a bound inner class decorator...
