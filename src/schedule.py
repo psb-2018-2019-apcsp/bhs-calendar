@@ -141,8 +141,13 @@ class Block:
 
     @property
     def is_passing(self):
-        """Return True if self._name is any of the passing block names."""
+        """Return True if self._name is any of passing block names."""
         return self._name[0].upper() in ['P', '?']
+
+    @property
+    def is_school_passing(self):
+        """Return True if self._name is any of school passing block names."""
+        return self._name.upper() in ['PB2O', 'PO2B']
 
     @property
     def duration(self):
@@ -471,15 +476,15 @@ class Schedule:
                 if block.name[0].upper() == 'L':
                     if i > 0:
                         but1, but1_index = self._dict[key][i - 1], i - 1
-                        if but1.is_passing:
+                        if but1.is_passing and not but1.is_school_passing:
                             self._dict[key][i].start = but1.start
                     if i < len(self._dict[key]):
                         and1, and1_index = self._dict[key][i + 1], i + 1
-                        if and1.is_passing:
+                        if and1.is_passing and not and1.is_school_passing:
                             self._dict[key][i].end = and1.end
-            if and1_index is not None:
+            if and1_index is not None and not and1.is_school_passing:
                 del(self._dict[key][and1_index])
-            if but1_index is not None:
+            if but1_index is not None and not but1.is_school_passing:
                 del(self._dict[key][but1_index])
 
     def _webpage(self, verbose=False):
@@ -508,7 +513,7 @@ class Schedule:
                 is_passing = block.is_passing           # TODO: add these tests
                 is_passing_split = name in ['PS', ]
                 is_passing_question = name in ['?', ]
-                is_school_passing = name in ['PB2O', 'PO2B', ]
+                is_school_passing = block.is_school_passing
                 # Display passing blocks w/ no content, just mouse-over title.
                 if is_passing and not is_school_passing:
                     cls = f"passing"
@@ -655,8 +660,8 @@ if __name__ == '__main__':
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-split.csv')
         # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-short.csv')
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-short.csv')
-        # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
-        # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
+        human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
+        steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
         both_schedule = Schedule('schedule-1b-bhs-2019-2020-both.csv')
 
         lipsum = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra ex vitae nisi volutpat, vitae elementum felis eleifend. Nullam laoreet ac nisl a dignissim. In sem libero, gravida commodo diam eu, egestas vehicula purus. Pellentesque laoreet maximus nunc, eget sollicitudin urna feugiat id. Sed aliquam purus ut leo pellentesque, euismod eleifend quam eleifend. Pellentesque eget urna sed nisl finibus facilisis. Aliquam consequat diam magna, in mollis leo posuere imperdiet. Ut fermentum bibendum pellentesque. Aenean eleifend massa nisi, et dictum justo sagittis id. Etiam sollicitudin et turpis at cursus. Proin nec est lectus. Nullam dui purus, imperdiet a mattis in, convallis dictum massa. Suspendisse nec fringilla nibh.
