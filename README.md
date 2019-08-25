@@ -67,6 +67,7 @@ The **both** schedule is based on the [both](./data/schedule-1b-bhs-2019-2020-bo
 - [https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) &mdash; schedule spreadsheet
 - [https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/](https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) &mdash; calendar spreadsheet
 - [https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/](https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/) &mdash; a draft specification and use cases
+- [https://docs.google.com/spreadsheets/d/1cJHuqlNFnD4qoNwsVmBVm6mfkHxF9fGl3bx9HXC6JQs/](https://docs.google.com/spreadsheets/d/1cJHuqlNFnD4qoNwsVmBVm6mfkHxF9fGl3bx9HXC6JQs/) &mdash; The `both` schedule above broken out into six (unformatted) tables for six individual schedules &mdash; three for the cohorts; two for the lunches.
 - [https://icalendar.org/](https://icalendar.org/) &mdash; the RFC-7986 iCalendar specification
 - [https://github.com/bast/somepackage](https://github.com/bast/somepackage) &mdash; this [Python](https://docs.python.org/3/) poject is structured after Radovan Bast's `somepackage` project
 - [https://github.com/psb-2018-2019-apcsp/bhs-calendar](https://github.com/psb-2018-2019-apcsp/bhs-calendar) &mdash; the [Github](https://github.com/) repo for this project
