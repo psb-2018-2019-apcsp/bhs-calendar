@@ -139,15 +139,35 @@ class Block:
         """Return lunch string."""
         return self._lunch
 
+    def _is_name(self, names, length=None):
+        """Return True if self._name (conditionally sliced) is in names."""
+        nsl = self._name[:length] if length else self._name
+        return nsl.upper() in [p.upper() for p in names]
+
     @property
     def is_passing(self):
         """Return True if self._name is any of passing block names."""
-        return self._name[0].upper() in ['P', '?']
+        return self._is_name(['P', '?', ], 1)
+
+    @property
+    def is_passing_split(self):
+        """Return True if self._name is any of split passing block names."""
+        return self._is_name(['PS', ])
+
+    @property
+    def is_passing_question(self):
+        """Return True if self._name is any of question passing block names."""
+        return self._is_name(['?', ])
 
     @property
     def is_school_passing(self):
         """Return True if self._name is any of school passing block names."""
-        return self._name.upper() in ['PB2O', 'PO2B']
+        return self._is_name(['PB2O', 'PO2B', ])
+
+    @property
+    def is_lunch(self):
+        """Return True if self._name is any of lunch block names."""
+        return self._is_name(['L', ], 1)
 
     @property
     def duration(self):
@@ -461,7 +481,7 @@ class Schedule:
                             + ('+' if subtotal else '') \
                             + str(block.duration)
                     # Handle lunches separately.
-                    if key == name and block.name.upper()[0] == 'L':
+                    if key == name and block.is_lunch:
                         subtotal = totals[name].get('L', '')
                         totals[name]['L'] = subtotal \
                             + ('+' if subtotal else '') \
@@ -473,7 +493,7 @@ class Schedule:
         for key in self._dict.keys():
             but1_index, and1_index = None, None
             for i, block in enumerate(self._dict[key]):
-                if block.name[0].upper() == 'L':
+                if block.is_lunch:
                     if i > 0:
                         but1, but1_index = self._dict[key][i - 1], i - 1
                         if but1.is_passing and not but1.is_school_passing:
@@ -510,30 +530,26 @@ class Schedule:
             # Add a paragraph for every block to cohort.
             for block in self._dict[key]:
                 name = block.name.upper()
-                is_passing = block.is_passing           # TODO: add these tests
-                is_passing_split = name in ['PS', ]
-                is_passing_question = name in ['?', ]
-                is_school_passing = block.is_school_passing
                 # Display passing blocks w/ no content, just mouse-over title.
-                if is_passing and not is_school_passing:
+                if block.is_passing and not block.is_school_passing:
                     cls = f"passing"
                     text = ''
-                    if is_passing_split:
+                    if block.is_passing_split:
                         cls += f" split"
-                    if is_passing_question:
+                    if block.is_passing_question:
                         cls += f" question"
                     if block.duration < 5:
                         cls += f" short"
                 else:
                     school = block.school
                     cls = f"school-{name.lower()}" \
-                        if is_school_passing \
+                        if block.is_school_passing \
                         else f"block cohort-{cohort.lower()} " \
                             f"school-{school.lower()}"
                     text = f"{block.name}<br />" \
                         f"{block.duration_str}<br />" \
                         f"{block.duration}"
-                    if name[0] in ['L', ]:              # add lunch class
+                    if block.is_lunch:                  # add lunch class
                         cls += f" lunch"
                 pad = self._scale(block.duration)
                 title = f"{name} @ " \
@@ -660,8 +676,8 @@ if __name__ == '__main__':
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-split.csv')
         # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-short.csv')
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-short.csv')
-        human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
-        steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
+        # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
+        # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
         both_schedule = Schedule('schedule-1b-bhs-2019-2020-both.csv')
 
         lipsum = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra ex vitae nisi volutpat, vitae elementum felis eleifend. Nullam laoreet ac nisl a dignissim. In sem libero, gravida commodo diam eu, egestas vehicula purus. Pellentesque laoreet maximus nunc, eget sollicitudin urna feugiat id. Sed aliquam purus ut leo pellentesque, euismod eleifend quam eleifend. Pellentesque eget urna sed nisl finibus facilisis. Aliquam consequat diam magna, in mollis leo posuere imperdiet. Ut fermentum bibendum pellentesque. Aenean eleifend massa nisi, et dictum justo sagittis id. Etiam sollicitudin et turpis at cursus. Proin nec est lectus. Nullam dui purus, imperdiet a mattis in, convallis dictum massa. Suspendisse nec fringilla nibh.
