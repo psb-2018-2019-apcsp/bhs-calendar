@@ -415,7 +415,7 @@ class Schedule:
             self._dict[day] = blocks
         print(self._dict)                               # TODO: debugging
         # Merge passing time with lunch
-        self._merge()
+        #self._merge()
 
         # Format webpage based on _schedule and _dict and write it out.
         self._page = self._webpage(True)
