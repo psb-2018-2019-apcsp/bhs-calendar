@@ -28,7 +28,7 @@ This project has three phases.
 - &#9746; **Phase 1**:
   - Create [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/)s for each schedule (*day, week, cohort, lunch*) so that (a) every block is correctly filled in minute by minute and (b) passing time and lunch durations are specified so that the total duration of every block is close to equal (435 minutes) during the cycle.
   - Create schedule webpages for each schedule of interest that (a) have block sizes proportional to their duration, (b) color code special passing times and lunches, and (c) list block totals for each cohort for comparison.
-  - Also display at the botttom of the webpages (a) the total calculations for each cohort for each lunch and (b) a no-passing-time schedule formatted as a table (for easy copying to a spreadsheet or document table).
+  - Also display at the botttom of the webpages (a) the total calculations for each cohort for each lunch and (b) a no-passing-time schedule formatted as a table (for easy copying to a spreadsheet or document table). (Note: that output is copied [here](https://docs.google.com/spreadsheets/d/1cJHuqlNFnD4qoNwsVmBVm6mfkHxF9fGl3bx9HXC6JQs/) where the six schedule grids are broken out.)
 - &#9744; **Phase 2** &mdash;
   - Create a [spreadsheet](https://drive.google.com/open?id=1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) for the 2019-2020 calendar with (a) weeks correctly identified and (b) known special days identified.
   - Create [iCalendar](https://icalendar.org/) version(s) of the calendar and schedule with (a) each block for each weekday, week, cohort, and lunch has the correct timing reflective of the [schedule](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) and [calendar](https://drive.google.com/open?id=1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) spreadsheets and (b) the iCalendar is *minimal* (TBD what that means).
@@ -51,13 +51,13 @@ The **30-minute** schedules keep (almost) all lunches at 30 minutes, thereby ste
 
 The **shortened** schedules are a first draft at evening the block durations (our goal was within 5 minutes of 435) by shortening the lunch block in cases of split lunch (mostly the HUMAN lunch schedule) by stealing the first passing time from the lunch block. This results in (mostly) even block durations (though there are still some anomolies) but *wildly* uneven lunch durations, *e.g.* a 41-minute lunch discrepancy for grade 9 from HUMAN to STEAM.
 
-The **merged** schedules have all lunch and passing times merged into one '*lunch*' block we are calling a *blob*.
+The **merged** schedules have all lunch and passing times merged into one '*lunch*' block we are calling a *blob*, making explicit the start and end times of the class blocks.
 
 Version | MERGED | UNMERGED
 ---- | ---- | ----
 **both** | [./www/schedule-1b-teacher-bhs-2019-2020-both-merge.html](./www/schedule-1b-teacher-bhs-2019-2020-both-merge.html) | [./www/schedule-1b-teacher-bhs-2019-2020-both.html](./www/schedule-1b-teacher-bhs-2019-2020-both.html)
 
-The **both** schedule is based on the [both](./data/schedule-1b-teacher-bhs-2019-2020-both.csv) .CSV file where both the HUMAN and STEAM schedules are side by side. This .CSV file is based on a worksheet in the schedule [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) where both HUMAN- and STEAM-lunch worksheets are combined. In the *merged* schedules, all lunch and passing times are merged into one '*lunch*' blob (as in the **merged** schedules).
+The **both** schedule is based on the [both](./data/schedule-1b-teacher-bhs-2019-2020-both.csv) .CSV file where both the HUMAN and STEAM schedules are side by side. This .CSV file is based on a worksheet in the schedule [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) where both HUMAN- and STEAM-lunch worksheets are combined. In the *merged* schedules, all lunch and passing times are merged into one '*lunch*' blob (as in the **merged** schedules). These can be hard to read, because they show all six schedules side by side for each day of the cycle, but they allow easy visualization of the alignment of every block.
 
 *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
 
@@ -66,7 +66,7 @@ The **both** schedule is based on the [both](./data/schedule-1b-teacher-bhs-2019
 - [./data/19_20_SCHED_v1bTeacher.pdf](./data/19_20_SCHED_v1bTeacher.pdf) &mdash; Current BHS schedule 1B (teacher)
 - [https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) &mdash; schedule spreadsheet
 - [https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/](https://docs.google.com/spreadsheets/d/1XNgSQoPKhd-JwNxHYY-Du3DxR2h2H1y7SAtAX4u7fEw/) &mdash; calendar spreadsheet
-- [https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/](https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/) &mdash; a draft specification and use cases
+- [https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/](https://docs.google.com/document/d/1H61KrrEBcSuVhxMbGfzUnjhB_DwCMegLPtPQkz8yulA/) &mdash; a (rough) draft specification and use cases
 - [https://docs.google.com/spreadsheets/d/1cJHuqlNFnD4qoNwsVmBVm6mfkHxF9fGl3bx9HXC6JQs/](https://docs.google.com/spreadsheets/d/1cJHuqlNFnD4qoNwsVmBVm6mfkHxF9fGl3bx9HXC6JQs/) &mdash; The `both` schedule above broken out into six (unformatted) tables for six individual schedules &mdash; three for the cohorts; two for the lunches.
 - [https://icalendar.org/](https://icalendar.org/) &mdash; the RFC-7986 iCalendar specification
 - [https://github.com/bast/somepackage](https://github.com/bast/somepackage) &mdash; this [Python](https://docs.python.org/3/) poject is structured after Radovan Bast's `somepackage` project
