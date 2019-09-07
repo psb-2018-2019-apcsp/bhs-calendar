@@ -205,7 +205,8 @@ class Block:
 class Schedule:
     """2019-2020 BHS Schedule."""
 
-    def __init__(self, csvfile, datadir='../data', wwwdir='../www'):
+    def __init__(self, csvfile,
+                 datadir='../data', wwwdir='../www', merged=False):
         """Initialize Schedule class for csvfile .CSV file, including
         reading csvfile .CSV file from datadir and writing csvfile .HTML
         file to wwwdir. The .CSV file follows the following format:
@@ -336,9 +337,9 @@ class Schedule:
         self._total_format = """
 <p class="{cls}" title="{title}">{text}</p>
 """
-        self._init(csvfile, datadir, wwwdir)
+        self._init(csvfile, datadir, wwwdir, merged)
 
-    def _init(self, csvfile, datadir, wwwdir):
+    def _init(self, csvfile, datadir, wwwdir, merged):
         """Initialize webpage parameters."""
 
         filename, extension = os.path.splitext(csvfile)
@@ -346,7 +347,8 @@ class Schedule:
         assert extension == '.csv', f"Bad extension: '{extension}' != '.csv'"
 
         self._csvpath = os.path.join(self._datadir, self._filename + '.csv')
-        self._wwwpath = os.path.join(self._wwwdir, self._filename + '.html')
+        self._wwwpath = os.path.join(self._wwwdir, self._filename
+                                     + ('-merge.html' if merged else '.html'))
 
         self._schedule = self._csv(self._csvpath)       # parse .CSV file
         assert len(set(len(l) for l in self._schedule)) == 1, \
@@ -415,7 +417,8 @@ class Schedule:
             self._dict[day] = blocks
         print(self._dict)                               # TODO: debugging
         # Merge passing time with lunch
-        #self._merge()
+        if merged:
+            self._merge()
 
         # Format webpage based on _schedule and _dict and write it out.
         self._page = self._webpage(True)
@@ -676,9 +679,13 @@ if __name__ == '__main__':
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-split.csv')
         # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-short.csv')
         # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-short.csv')
-        # human_schedule = Schedule('schedule-1b-bhs-2019-2020-human-merge.csv')
-        # steam_schedule = Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv')
+        # human_schedule = \
+        #     Schedule('schedule-1b-bhs-2019-2020-human-merge.csv', merged=True)
+        # steam_schedule = \
+        #     Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv', merged=True)
         both_schedule = Schedule('schedule-1b-bhs-2019-2020-both.csv')
+        both_schedule = \
+            Schedule('schedule-1b-bhs-2019-2020-both.csv', merged=True)
 
         lipsum = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra ex vitae nisi volutpat, vitae elementum felis eleifend. Nullam laoreet ac nisl a dignissim. In sem libero, gravida commodo diam eu, egestas vehicula purus. Pellentesque laoreet maximus nunc, eget sollicitudin urna feugiat id. Sed aliquam purus ut leo pellentesque, euismod eleifend quam eleifend. Pellentesque eget urna sed nisl finibus facilisis. Aliquam consequat diam magna, in mollis leo posuere imperdiet. Ut fermentum bibendum pellentesque. Aenean eleifend massa nisi, et dictum justo sagittis id. Etiam sollicitudin et turpis at cursus. Proin nec est lectus. Nullam dui purus, imperdiet a mattis in, convallis dictum massa. Suspendisse nec fringilla nibh.
 
