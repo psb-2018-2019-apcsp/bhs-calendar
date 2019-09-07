@@ -8,10 +8,10 @@ For the academic years 2019-2020 and 2020-2021, [BHS](http://bhs.brookline.k12.m
 
 ## What we did
 
-- We created a minute-by-minute [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) based on the published BHS schedule [1B (teacher)](./data/19_20_SCHED_v1bTeacher.pdf) with the following encoding:
+- We created a minute-by-minute [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) based on the published BHS schedules [1B](./data/19_20_SCHED_v1B.pdf) &amp; [1B (teacher)](./data/19_20_SCHED_v1bTeacher.pdf) with the following encoding:
   - The top row contains the name of the schedule's lunch in the leftmost column &mdash; the `HUMAN` lunch (currently called *Lunch A*) or the `STEAM` lunch  (currently called *Lunch B*) &mdash; followed by headers for each cohort for each day formatted as either 3 or 4 space-separated values: *day, week, cohort* or *day, week, cohort, lunch* (when more than one lunch is included in the single schedule).
   - The leftmost column contains the name of the schedule's lunch in the top row, followed by the minute-by-minute time from `7:30 AM` to `3:00 PM` inclusive, one minute per row.
-  - Blocks `A`, `B`, `C`, `D`, `E`, `F`, `G`, `T` (& `T-H`), `X`, & `Z` are identified with their numbers.
+  - Blocks `A`, `B`, `C`, `D`, `E`, `F`, `G`, `T` (&amp; `T-H`), `X`, &amp; `Z` are identified with their numbers.
   - Lunches are indicated as `LB` (lunch at BHS) and `LO` (lunch at OLS).
   - Passing time is indicated with a variety of codes: `P` (regular passing time beween classes), `PB2O` (grade-9 passing from BHS to OLS), `PO2B` (grade-9 passing from OLS to BHS), `PS` (passing time before or after a 'split lunch'), and `?` (passing time taken from one block or the other when listed on the [schedule](./data/19_20_SCHED_v1bTeacher.pdf) as zero-length).
 - Within the [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) we created worksheets (tabs) for different lunches (`HUMAN`, `STEAM`, &amp; `BOTH`), as well as difference-calculator worksheets used to flag differences between cohort times.
@@ -55,9 +55,9 @@ The **merged** schedules have all lunch and passing times merged into one '*lunc
 
 Version | MERGED | UNMERGED
 ---- | ---- | ----
-**both** | [./www/schedule-1b-bhs-2019-2020-both-merge.html](./www/schedule-1b-bhs-2019-2020-both-merge.html) | [./www/schedule-1b-bhs-2019-2020-both.html](./www/schedule-1b-bhs-2019-2020-both.html)
+**both** | [./www/schedule-1b-teacher-bhs-2019-2020-both-merge.html](./www/schedule-1b-teacher-bhs-2019-2020-both-merge.html) | [./www/schedule-1b-teacher-bhs-2019-2020-both.html](./www/schedule-1b-teacher-bhs-2019-2020-both.html)
 
-The **both** schedule is based on the [both](./data/schedule-1b-bhs-2019-2020-both.csv) .CSV file where both the HUMAN and STEAM schedules are side by side. This .CSV file is based on a worksheet in the schedule [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) where both HUMAN- and STEAM-lunch worksheets are combined. In the *merged* schedules, all lunch and passing times are merged into one '*lunch*' blob (as in the **merged** schedules).
+The **both** schedule is based on the [both](./data/schedule-1b-teacher-bhs-2019-2020-both.csv) .CSV file where both the HUMAN and STEAM schedules are side by side. This .CSV file is based on a worksheet in the schedule [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) where both HUMAN- and STEAM-lunch worksheets are combined. In the *merged* schedules, all lunch and passing times are merged into one '*lunch*' blob (as in the **merged** schedules).
 
 *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
 
