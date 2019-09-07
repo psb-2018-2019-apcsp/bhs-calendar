@@ -51,13 +51,13 @@ The **30-minute** schedules keep (almost) all lunches at 30 minutes, thereby ste
 
 The **shortened** schedules are a first draft at evening the block durations (our goal was within 5 minutes of 435) by shortening the lunch block in cases of split lunch (mostly the HUMAN lunch schedule) by stealing the first passing time from the lunch block. This results in (mostly) even block durations (though there are still some anomolies) but *wildly* uneven lunch durations, *e.g.* a 41-minute lunch discrepancy for grade 9 from HUMAN to STEAM.
 
-The **merged** schedules have all lunch and passing times merged into one '*lunch*' block.
+The **merged** schedules have all lunch and passing times merged into one '*lunch*' block we are calling a *blob*.
 
-Version | BOTH
----- | ----
-**both** | [./www/schedule-1b-bhs-2019-2020-both.html](./www/schedule-1b-bhs-2019-2020-both.html)
+Version | MERGED | UNMERGED
+---- | ---- | ----
+**both** | [./www/schedule-1b-bhs-2019-2020-both-merge.html](./www/schedule-1b-bhs-2019-2020-both-merge.html) | [./www/schedule-1b-bhs-2019-2020-both.html](./www/schedule-1b-bhs-2019-2020-both.html)
 
-The **both** schedule is based on the [both](./data/schedule-1b-bhs-2019-2020-both.csv) .CSV file where both the HUMAN and STEAM schedules are side by side. In these schedules, all lunch and passing times are merged into one '*lunch*' block (as in the **merged** schedules).
+The **both** schedule is based on the [both](./data/schedule-1b-bhs-2019-2020-both.csv) .CSV file where both the HUMAN and STEAM schedules are side by side. This .CSV file is based on a worksheet in the schedule [spreadsheet](https://docs.google.com/spreadsheets/d/1ElzWdWimIW7kABuK7UxARrl-ud2nYNYw5Ur_KMCq4mM/) where both HUMAN- and STEAM-lunch worksheets are combined. In the *merged* schedules, all lunch and passing times are merged into one '*lunch*' blob (as in the **merged** schedules).
 
 *More [TK](https://en.wikipedia.org/wiki/To_come_(publishing))&hellip;*
 
