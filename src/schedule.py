@@ -683,9 +683,9 @@ if __name__ == '__main__':
         #     Schedule('schedule-1b-bhs-2019-2020-human-merge.csv', merged=True)
         # steam_schedule = \
         #     Schedule('schedule-1b-bhs-2019-2020-steam-merge.csv', merged=True)
-        both_schedule = Schedule('schedule-1b-bhs-2019-2020-both.csv')
+        both_schedule = Schedule('schedule-1b-teacher-bhs-2019-2020-both.csv')
         both_schedule = \
-            Schedule('schedule-1b-bhs-2019-2020-both.csv', merged=True)
+            Schedule('schedule-1b-teacher-bhs-2019-2020-both.csv', merged=True)
 
         lipsum = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra ex vitae nisi volutpat, vitae elementum felis eleifend. Nullam laoreet ac nisl a dignissim. In sem libero, gravida commodo diam eu, egestas vehicula purus. Pellentesque laoreet maximus nunc, eget sollicitudin urna feugiat id. Sed aliquam purus ut leo pellentesque, euismod eleifend quam eleifend. Pellentesque eget urna sed nisl finibus facilisis. Aliquam consequat diam magna, in mollis leo posuere imperdiet. Ut fermentum bibendum pellentesque. Aenean eleifend massa nisi, et dictum justo sagittis id. Etiam sollicitudin et turpis at cursus. Proin nec est lectus. Nullam dui purus, imperdiet a mattis in, convallis dictum massa. Suspendisse nec fringilla nibh.
 
